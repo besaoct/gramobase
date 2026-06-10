@@ -24,7 +24,7 @@
     }
   },
   "bin": {
-    "gramobase": "./dist/bin/gramobase.js"
+    "gramobase": "dist/bin/gramobase.js"
   },
   "scripts": {
     "build": "tsup",
@@ -34,7 +34,14 @@
     "lint": "eslint src",
     "prepublishOnly": "npm run build"
   },
-  "keywords": ["telegram", "database", "backend", "orm", "storage", "free"],
+  "keywords": [
+    "telegram",
+    "database",
+    "backend",
+    "orm",
+    "storage",
+    "free"
+  ],
   "license": "MIT",
   "dependencies": {
     "zod": "^3.22.0",
