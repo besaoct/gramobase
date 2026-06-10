@@ -1,6 +1,6 @@
 {
   "name": "gramobase",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Telegram as a free, infinite, production-grade backend database with a MongoDB-like ORM, hot-caching, JWT auth, WAL crash-recovery, and SSE realtime streams.",
   "type": "module",
   "main": "dist/index.js",
