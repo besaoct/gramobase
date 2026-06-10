@@ -2,11 +2,20 @@
 import { Command } from 'commander';
 import chalk from 'chalk';
 import ora from 'ora';
-import { createInterface } from 'readline';
-import { writeFileSync, existsSync, mkdirSync } from 'fs';
+import { writeFileSync, existsSync, mkdirSync, readFileSync } from 'fs';
 import { join } from 'path';
+import inquirer from 'inquirer';
 
-const pkg = { version: '0.1.0' };
+let pkg = { version: '0.0.0' };
+try {
+  const pkgUrl = new URL('../../package.json', import.meta.url);
+  pkg = JSON.parse(readFileSync(pkgUrl, 'utf-8'));
+} catch (e) {
+  try {
+    const pkgUrl2 = new URL('../package.json', import.meta.url);
+    pkg = JSON.parse(readFileSync(pkgUrl2, 'utf-8'));
+  } catch (e2) {}
+}
 
 const program = new Command();
 
@@ -29,26 +38,38 @@ program
     let encryptionKey = '';
 
     if (!opts.yes) {
-      const rl = createInterface({ input: process.stdin, output: process.stdout });
-      const ask = (q: string) => new Promise<string>((res) => rl.question(q, res));
-
       console.log(chalk.cyan.bold('\n  Step 1: Bot Tokens (Anti-flood rotation)'));
       console.log(chalk.gray('  You can use multiple bot tokens to increase your rate limit (30 req/s per bot).'));
-      const numBotsStr = await ask(chalk.white('  How many bot tokens do you want to add? (Default: 1): '));
+      
+      const { numBotsStr } = await inquirer.prompt([{
+        type: 'input',
+        name: 'numBotsStr',
+        message: chalk.white('How many bot tokens do you want to add? (Default: 1):')
+      }]);
       const numBots = Math.max(1, parseInt(numBotsStr, 10) || 1);
 
       console.log(chalk.gray('  Create your bots by messaging @BotFather on Telegram and copy the HTTP API tokens.'));
       for (let i = 1; i <= numBots; i++) {
-        const token = await ask(chalk.white(`  Bot token ${i}: `));
+        const { token } = await inquirer.prompt([{
+          type: 'password',
+          name: 'token',
+          message: chalk.white(`Bot token ${i}:`),
+          mask: chalk.red('*')
+        }]);
         botTokens.push(token.trim());
       }
 
       console.log(chalk.cyan.bold('\n  Step 2: Channel ID'));
       console.log(chalk.gray('  You can enter your Channel ID manually (e.g. -100123456789)'));
       console.log(chalk.gray('  OR leave it blank to auto-detect it.'));
-      channelId = await ask(chalk.white('  Channel ID (Press Enter to auto-detect): '));
-
-      channelId = channelId.trim();
+      
+      const { channelIdInput } = await inquirer.prompt([{
+        type: 'input',
+        name: 'channelIdInput',
+        message: chalk.white('Channel ID (Press Enter to auto-detect):')
+      }]);
+      
+      channelId = channelIdInput.trim();
 
       if (!channelId) {
         console.log(chalk.yellow('\n  [Auto-Detect Mode]'));
@@ -94,8 +115,12 @@ program
       }
 
       console.log(chalk.cyan.bold('\n  Step 3: Security (Optional)'));
-      encryptionKey = await ask(chalk.white('  Encryption key (optional, press enter to skip): '));
-      rl.close();
+      const { encryptionKeyInput } = await inquirer.prompt([{
+        type: 'input',
+        name: 'encryptionKeyInput',
+        message: chalk.white('Encryption key (optional, press enter to skip):')
+      }]);
+      encryptionKey = encryptionKeyInput;
     }
 
     const spinner = ora('Setting up gramobase...').start();

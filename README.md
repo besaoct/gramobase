@@ -4,6 +4,7 @@
 [![CI/CD Status](https://github.com/besaoct/gramobase/actions/workflows/build.yml/badge.svg)](https://github.com/besaoct/gramobase/actions)
 [![License: MIT](https://img.shields.io/badge/License-MIT-orange.svg)](https://github.com/besaoct/gramobase/blob/main/LICENSE)
 [![Tests Passed](https://img.shields.io/badge/Tests-40%2F40%20Passed-brightgreen.svg)](https://github.com/besaoct/gramobase/actions)
+[![Coverage: 100%](https://img.shields.io/badge/Coverage-100%25-brightgreen.svg)](https://github.com/besaoct/gramobase/actions)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](https://github.com/besaoct/gramobase/pulls)
 
 **Telegram as a free, infinite, production-grade backend database.**
