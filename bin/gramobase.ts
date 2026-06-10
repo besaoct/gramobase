@@ -184,9 +184,8 @@ export default config;
   ${chalk.gray('└─')} gramobase/migrations/
 
   ${chalk.bold('Next steps:')}
-  ${chalk.cyan('1.')} Add your bot token and channel ID to .env
-  ${chalk.cyan('2.')} Run ${chalk.bold('gramobase migrate')} to initialize the database
-  ${chalk.cyan('3.')} Import and use: ${chalk.gray("import { createClient } from 'gramobase'")}
+  ${chalk.cyan('1.')} Run ${chalk.bold('npx gramobase migrate')} to initialize the database
+  ${chalk.cyan('2.')} Import and use: ${chalk.gray("import { createClient } from 'gramobase'")}
 `);
   });
 
