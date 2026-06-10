@@ -1,0 +1,65 @@
+# ─── Never publish source — only compiled output ──────────────────────────────
+
+# Source code (consumers get dist/ only)
+src/
+bin/
+examples/
+test/
+tests/
+__tests__/
+*.test.ts
+*.spec.ts
+
+# Config & tooling
+.github/
+.vscode/
+.idea/
+tsconfig.json
+tsup.config.ts
+tsup.config.js
+vitest.config.ts
+eslint.config.*
+.eslintrc*
+.prettierrc*
+.editorconfig
+biome.json
+nodemon.json
+
+# Development environment
+.env
+.env.*
+*.env
+jwt_secret.txt
+
+# Build artifacts (keep dist/ but exclude maps in prod if desired)
+*.tsbuildinfo
+tsconfig.tsbuildinfo
+
+# Logs & coverage
+logs/
+*.log
+coverage/
+.nyc_output/
+
+# OS junk
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Lock files (consumers use their own)
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+bun.lockb
+
+# Temp / scratch
+*.tgz
+*.tar.gz
+.cache/
+.turbo/
+
+# ─── What IS published ────────────────────────────────────────────────────────
+# dist/         ← compiled ESM + CJS + .d.ts
+# README.md
+# LICENSE
+# package.json
