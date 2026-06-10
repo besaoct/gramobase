@@ -13,11 +13,11 @@ import type { Migration } from 'gramobase';
 const db = await createClient({
   // Pass an array of tokens for anti-flood rotation (30 req/s × N tokens)
   botToken: [
-    process.env['BOT_TOKEN_1']!,
-    process.env['BOT_TOKEN_2']!,  // optional extra tokens
+    process.env['GRAMOBASE_BOT_TOKEN_1']!,
+    process.env['GRAMOBASE_BOT_TOKEN_2']!,  // optional extra tokens
   ],
-  channelId: process.env['CHANNEL_ID']!,
-  encryptionKey: process.env['ENCRYPTION_KEY'], // AES-256 at rest
+  channelId: process.env['GRAMOBASE_CHANNEL_ID']!,
+  encryptionKey: process.env['GRAMOBASE_ENCRYPTION_KEY'], // AES-256 at rest
   cacheMaxBytes: 128 * 1024 * 1024,             // 128MB hot cache
   cacheTtlMs: 120_000,
   debug: true,
@@ -105,7 +105,7 @@ await products.deleteOne({ stock: { $eq: 0 } });
 // ─── 5. Auth ────────────────────────────────────────────────────────────────
 
 const auth = db.createAuth({
-  jwtSecret: process.env['JWT_SECRET']!, // loaded from env, not hardcoded
+  jwtSecret: process.env['GRAMOBASE_JWT_SECRET']! || 'secret', // loaded from env, not hardcoded
   jwtExpiresIn: '7d',
   bcryptRounds: 12,
   onSignIn: async (user) => {

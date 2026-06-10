@@ -4,7 +4,7 @@ import chalk from 'chalk';
 import ora from 'ora';
 import { createInterface } from 'readline';
 import { writeFileSync, existsSync, mkdirSync } from 'fs';
-import { join, resolve, basename } from 'path';
+import { join } from 'path';
 
 const pkg = { version: '0.1.0' };
 
@@ -24,7 +24,7 @@ program
   .action(async (opts) => {
     console.log('\n' + chalk.bold.cyan('  gramobase') + chalk.gray(' — Telegram backend\n'));
 
-    let botToken = '';
+    let botTokens: string[] = [];
     let channelId = '';
     let encryptionKey = '';
 
@@ -32,36 +32,105 @@ program
       const rl = createInterface({ input: process.stdin, output: process.stdout });
       const ask = (q: string) => new Promise<string>((res) => rl.question(q, res));
 
-      console.log(chalk.gray('  Get a bot token from @BotFather on Telegram\n'));
-      botToken = await ask(chalk.white('  Bot token: '));
-      channelId = await ask(chalk.white('  Channel ID (e.g. -100123456789): '));
+      console.log(chalk.cyan.bold('\n  Step 1: Bot Tokens (Anti-flood rotation)'));
+      console.log(chalk.gray('  You can use multiple bot tokens to increase your rate limit (30 req/s per bot).'));
+      const numBotsStr = await ask(chalk.white('  How many bot tokens do you want to add? (Default: 1): '));
+      const numBots = Math.max(1, parseInt(numBotsStr, 10) || 1);
+
+      console.log(chalk.gray('  Create your bots by messaging @BotFather on Telegram and copy the HTTP API tokens.'));
+      for (let i = 1; i <= numBots; i++) {
+        const token = await ask(chalk.white(`  Bot token ${i}: `));
+        botTokens.push(token.trim());
+      }
+
+      console.log(chalk.cyan.bold('\n  Step 2: Channel ID'));
+      console.log(chalk.gray('  You can enter your Channel ID manually (e.g. -100123456789)'));
+      console.log(chalk.gray('  OR leave it blank to auto-detect it.'));
+      channelId = await ask(chalk.white('  Channel ID (Press Enter to auto-detect): '));
+
+      channelId = channelId.trim();
+
+      if (!channelId) {
+        console.log(chalk.yellow('\n  [Auto-Detect Mode]'));
+        console.log(chalk.gray(`  1. Create a private Telegram channel.`));
+        console.log(chalk.gray(`  2. Add your bot as an Administrator with full permissions.`));
+        console.log(chalk.gray(`  3. Send any message in the channel (e.g. "hello").\n`));
+        
+        const spinner = ora('Waiting for a message in your channel...').start();
+        
+        let detected = false;
+        let offset = 0;
+        // Use the first token to poll
+        const pollToken = botTokens[0] || '';
+        
+        while (!detected) {
+          try {
+            const res = await fetch(`https://api.telegram.org/bot${pollToken}/getUpdates?offset=${offset}&timeout=2`);
+            const json: any = await res.json();
+            
+            if (json.ok && json.result.length > 0) {
+              for (const update of json.result) {
+                offset = update.update_id + 1;
+                if (update.channel_post && update.channel_post.chat) {
+                  channelId = update.channel_post.chat.id.toString();
+                  const title = update.channel_post.chat.title || 'Unknown Channel';
+                  spinner.succeed(chalk.green(`Found channel: ${title} (${channelId})`));
+                  detected = true;
+                  break;
+                }
+              }
+            } else if (!json.ok) {
+              spinner.fail(chalk.red('Invalid Bot Token or Telegram API error.'));
+              process.exit(1);
+            }
+          } catch (e) {
+            // Ignore fetch errors and continue polling
+          }
+          
+          if (!detected) {
+            await new Promise((resolve) => setTimeout(resolve, 2000));
+          }
+        }
+      }
+
+      console.log(chalk.cyan.bold('\n  Step 3: Security (Optional)'));
       encryptionKey = await ask(chalk.white('  Encryption key (optional, press enter to skip): '));
       rl.close();
     }
 
     const spinner = ora('Setting up gramobase...').start();
 
-    // Sanitize inputs — only use basename of any path-like values
-    const safeToken = botToken.trim();
-    const safeChannelId = channelId.trim();
-    const safeKey = encryptionKey.trim();
-
     // Create .env — never write tokens to paths derived from user input
     const cwd = process.cwd();
     const envPath = join(cwd, '.env');
-    const envContent = [
-      `GRAMOBASE_BOT_TOKEN=${safeToken}`,
-      `GRAMOBASE_CHANNEL_ID=${safeChannelId}`,
-      safeKey ? `GRAMOBASE_ENCRYPTION_KEY=${safeKey}` : '# GRAMOBASE_ENCRYPTION_KEY=',
-    ].join('\n');
-
+    const envContentLines = [];
+    
+    if (botTokens.length === 1) {
+      envContentLines.push(`GRAMOBASE_BOT_TOKEN=${botTokens[0]}`);
+    } else {
+      botTokens.forEach((token, i) => {
+        envContentLines.push(`GRAMOBASE_BOT_TOKEN_${i + 1}=${token}`);
+      });
+    }
+    
+    const safeChannelId = channelId.trim();
+    const safeKey = encryptionKey.trim();
+    
+    envContentLines.push(`GRAMOBASE_CHANNEL_ID=${safeChannelId}`);
+    envContentLines.push(safeKey ? `GRAMOBASE_ENCRYPTION_KEY=${safeKey}` : '# GRAMOBASE_ENCRYPTION_KEY=');
+    
+    const envContent = envContentLines.join('\n');
     writeFileSync(envPath, envContent + '\n');
+
+    const botTokenConfigStr = botTokens.length === 1
+      ? `process.env.GRAMOBASE_BOT_TOKEN!`
+      : `[\n${botTokens.map((_, i) => `    process.env.GRAMOBASE_BOT_TOKEN_${i + 1}!,`).join('\n')}\n  ]`;
 
     // Create gramobase.config.ts
     const configContent = `import { GramoBaseConfig } from 'gramobase';
 
 const config: GramoBaseConfig = {
-  botToken: process.env.GRAMOBASE_BOT_TOKEN!,
+  botToken: ${botTokenConfigStr},
   channelId: process.env.GRAMOBASE_CHANNEL_ID!,
   // encryptionKey: process.env.GRAMOBASE_ENCRYPTION_KEY,
   cacheMaxBytes: 64 * 1024 * 1024, // 64MB hot cache

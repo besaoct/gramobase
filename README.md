@@ -38,6 +38,7 @@ const user = await users.findOne({ name: { $eq: 'Aarav' } });
 | Auth | ✓ built-in | ✓ | ✓ |
 | File storage | **2GB per file** | 1GB total | 1GB total |
 | Realtime | ✓ SSE/webhook | ✓ | ✓ |
+| Frontend UX | ✓ React Optimistic UI Hooks | ✓ | ✓ |
 | Infra needed | **None** | Firebase project | Supabase project |
 | Cost | **$0 forever** | Free tier | Free tier |
 
@@ -51,7 +52,7 @@ npm install gramobase
 
 ### Running Tests
 
-To run the suite of 33 unit tests checking the ORM, caching, queue/worker pooling, and authentication:
+To run the suite of 40 unit tests checking the ORM, caching, queue/worker pooling, and authentication:
 
 ```bash
 npm run test
@@ -63,13 +64,13 @@ npm run test
 npx gramobase init
 ```
 
-This walks you through entering your bot token and channel ID, creates `.env` and `gramobase.config.ts`.
+This interactive wizard walks you through setting up your backend. 
+It features **Auto-Detect** technology and **Anti-Flood** scaling: it will ask you how many Bot Tokens you want to configure (for 30 req/s scaling per bot). Provide your tokens, and leave the Channel ID blank! By sending a message in your channel, `gramobase` will automatically fetch your hidden Telegram Channel ID for you and generate your `.env` and `gramobase.config.ts`.
 
 **Prerequisites:**
 1. Create a bot via [@BotFather](https://t.me/BotFather) on Telegram — takes 30 seconds
 2. Create a private Telegram channel
 3. Add your bot as an **Administrator** with full permissions to the channel
-4. Get your channel ID (forward a message to @userinfobot)
 
 ---
 
@@ -184,6 +185,33 @@ const es = new EventSource('/stream');
 es.onmessage = (e) => console.log(JSON.parse(e.data));
 ```
 
+### React Hooks (Frontend Optimistic UI)
+
+`gramobase` provides a built-in, zero-dependency React module to power your frontends with instantaneous, production-grade Optimistic UI and per-action loading states.
+
+```tsx
+import { useGramoQuery, useGramoMutation } from 'gramobase/react';
+
+// Automatically manages data, loading, and error states!
+const { data: todos, isLoading } = useGramoQuery('/api/todos');
+
+// Automatically handles Optimistic UI rollbacks on failure!
+const toggleTodo = useGramoMutation('/api/todos', 'PATCH', {
+  onMutate: (variables) => {
+    // Instantly update UI (Optimistic Update)
+  },
+  onError: () => {
+    // Automatically rolls back if Telegram API fails
+  }
+});
+
+return (
+  <button onClick={() => toggleTodo.mutate({ id: 1 })} disabled={toggleTodo.isLoading}>
+    {toggleTodo.isLoading ? 'Saving...' : 'Complete Task'}
+  </button>
+)
+```
+
 ### Migrations
 
 ```ts
@@ -216,11 +244,11 @@ await db.migrate(migrations);
 // Pass multiple bot tokens — gramobase round-robins and backs off per token
 const db = await createClient({
   botToken: [
-    process.env.BOT_TOKEN_1!,
-    process.env.BOT_TOKEN_2!,
-    process.env.BOT_TOKEN_3!,
+    process.env.GRAMOBASE_BOT_TOKEN_1!,
+    process.env.GRAMOBASE_BOT_TOKEN_2!,
+    process.env.GRAMOBASE_BOT_TOKEN_3!,
   ],
-  channelId: process.env.CHANNEL_ID!,
+  channelId: process.env.GRAMOBASE_CHANNEL_ID!,
 }).connect();
 
 // 3 tokens × 30 req/s = effectively 90 writes/s sustained
