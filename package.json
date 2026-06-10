@@ -51,7 +51,7 @@
   "license": "MIT",
   "dependencies": {
     "bcryptjs": "latest",
-    "bloom-filters": "latest",
+    "bloom-filters": "^3.0.4",
     "chalk": "latest",
     "commander": "latest",
     "crypto-js": "latest",
@@ -60,7 +60,7 @@
     "inquirer": "latest",
     "jsonwebtoken": "latest",
     "kleur": "latest",
-    "lru-cache": "latest",
+    "lru-cache": "^11.5.1",
     "node-telegram-bot-api": "latest",
     "ora": "latest",
     "p-queue": "latest",
