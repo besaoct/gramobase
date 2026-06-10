@@ -274,17 +274,17 @@ Developer API (ORM, Auth, Files, Realtime)
          │
   Telegram Bot API ─────────────────────────────────┐
          │                                          │
-  Private Channel              File Storage      Realtime
-  (messages = docs,        (sendDocument,       (webhook +
-   pinned = index)          file_id refs)       SSE bridge)
+   Private Channel              File Storage      Realtime
+   (messages = docs,        (sendDocument,       (webhook +
+    pinned = registry)       file_id refs)       SSE bridge)
 ```
 
 ### Storage model
 
 - Each collection maps to a private Telegram channel (or shares one via namespaced message tags)
-- A **pinned index message** stores `{ id → msgId }` for O(1) lookups
+- A **pinned registry message** acts as a distributed write lock across processes and stores the master index mapping of collection names to their respective index message IDs (`{ collectionName → indexMsgId }`)
+- Individual **index messages** (unpinned) store `{ id → msgId }` for O(1) document lookups
 - The **Write-Ahead Log** channel stores operation logs for crash recovery
-- A **registry message** acts as a distributed write lock across processes
 
 ### Limits
 
