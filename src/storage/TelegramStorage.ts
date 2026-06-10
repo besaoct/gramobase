@@ -1,9 +1,9 @@
 import { createCipheriv, createDecipheriv, randomBytes, createHash } from 'crypto';
 import { BotWorkerPool } from '../workers/BotWorkerPool.js';
-import { TgBaseDocument } from '../types/index.js';
+import { GramoBaseDocument } from '../types/index.js';
 
-const INDEX_TAG = '__TGBASE_INDEX__';
-const DOC_TAG = '__TGBASE_DOC__';
+const INDEX_TAG = '__GRAMOBASE_INDEX__';
+const DOC_TAG = '__GRAMOBASE_DOC__';
 const MAX_MSG_BYTES = 4000;
 
 export interface IndexMessage {
@@ -102,7 +102,7 @@ export class TelegramStorage {
   // ─── Document CRUD ────────────────────────────────────────────────────────
 
   async writeDocument(
-    doc: TgBaseDocument,
+    doc: GramoBaseDocument,
     channelId?: string
   ): Promise<number> {
     const channel = channelId ?? this.defaultChannelId;
@@ -127,7 +127,7 @@ export class TelegramStorage {
   async readDocument(
     msgId: number,
     channelId?: string
-  ): Promise<TgBaseDocument | null> {
+  ): Promise<GramoBaseDocument | null> {
     const channel = channelId ?? this.defaultChannelId;
 
     try {
@@ -150,7 +150,7 @@ export class TelegramStorage {
 
       const parsed = JSON.parse(text);
       delete parsed[DOC_TAG];
-      return parsed as TgBaseDocument;
+      return parsed as GramoBaseDocument;
     } catch {
       return null;
     }
@@ -165,7 +165,7 @@ export class TelegramStorage {
 
   async updateDocument(
     msgId: number,
-    doc: TgBaseDocument,
+    doc: GramoBaseDocument,
     channelId?: string
   ): Promise<number> {
     // Telegram doesn't support editing beyond 48h — delete + re-insert

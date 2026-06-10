@@ -11,18 +11,18 @@ const pkg = { version: '0.1.0' };
 const program = new Command();
 
 program
-  .name('tgbase')
+  .name('gramobase')
   .description(chalk.cyan('Telegram as your free, infinite backend database'))
   .version(pkg.version);
 
-// ─── tgbase init ──────────────────────────────────────────────────────────
+// ─── gramobase init ──────────────────────────────────────────────────────────
 
 program
   .command('init')
-  .description('Initialize a new tgbase project')
+  .description('Initialize a new gramobase project')
   .option('--yes', 'Skip prompts, use defaults')
   .action(async (opts) => {
-    console.log('\n' + chalk.bold.cyan('  tgbase') + chalk.gray(' — Telegram backend\n'));
+    console.log('\n' + chalk.bold.cyan('  gramobase') + chalk.gray(' — Telegram backend\n'));
 
     let botToken = '';
     let channelId = '';
@@ -39,7 +39,7 @@ program
       rl.close();
     }
 
-    const spinner = ora('Setting up tgbase...').start();
+    const spinner = ora('Setting up gramobase...').start();
 
     // Sanitize inputs — only use basename of any path-like values
     const safeToken = botToken.trim();
@@ -50,20 +50,20 @@ program
     const cwd = process.cwd();
     const envPath = join(cwd, '.env');
     const envContent = [
-      `TGBASE_BOT_TOKEN=${safeToken}`,
-      `TGBASE_CHANNEL_ID=${safeChannelId}`,
-      safeKey ? `TGBASE_ENCRYPTION_KEY=${safeKey}` : '# TGBASE_ENCRYPTION_KEY=',
+      `GRAMOBASE_BOT_TOKEN=${safeToken}`,
+      `GRAMOBASE_CHANNEL_ID=${safeChannelId}`,
+      safeKey ? `GRAMOBASE_ENCRYPTION_KEY=${safeKey}` : '# GRAMOBASE_ENCRYPTION_KEY=',
     ].join('\n');
 
     writeFileSync(envPath, envContent + '\n');
 
-    // Create tgbase.config.ts
-    const configContent = `import { TgBaseConfig } from 'tgbase';
+    // Create gramobase.config.ts
+    const configContent = `import { GramoBaseConfig } from 'gramobase';
 
-const config: TgBaseConfig = {
-  botToken: process.env.TGBASE_BOT_TOKEN!,
-  channelId: process.env.TGBASE_CHANNEL_ID!,
-  // encryptionKey: process.env.TGBASE_ENCRYPTION_KEY,
+const config: GramoBaseConfig = {
+  botToken: process.env.GRAMOBASE_BOT_TOKEN!,
+  channelId: process.env.GRAMOBASE_CHANNEL_ID!,
+  // encryptionKey: process.env.GRAMOBASE_ENCRYPTION_KEY,
   cacheMaxBytes: 64 * 1024 * 1024, // 64MB hot cache
   cacheTtlMs: 60_000,
   concurrency: 25,
@@ -73,30 +73,30 @@ const config: TgBaseConfig = {
 export default config;
 `;
 
-    writeFileSync(join(cwd, 'tgbase.config.ts'), configContent);
+    writeFileSync(join(cwd, 'gramobase.config.ts'), configContent);
 
     // Create migrations folder — path is hardcoded, not from user input
-    const migrationsDir = join(cwd, 'tgbase', 'migrations');
+    const migrationsDir = join(cwd, 'gramobase', 'migrations');
     if (!existsSync(migrationsDir)) {
       mkdirSync(migrationsDir, { recursive: true });
     }
 
-    spinner.succeed(chalk.green('tgbase initialized!'));
+    spinner.succeed(chalk.green('gramobase initialized!'));
 
     console.log(`
   ${chalk.bold('Files created:')}
   ${chalk.gray('├─')} .env
-  ${chalk.gray('└─')} tgbase.config.ts
-  ${chalk.gray('└─')} tgbase/migrations/
+  ${chalk.gray('└─')} gramobase.config.ts
+  ${chalk.gray('└─')} gramobase/migrations/
 
   ${chalk.bold('Next steps:')}
   ${chalk.cyan('1.')} Add your bot token and channel ID to .env
-  ${chalk.cyan('2.')} Run ${chalk.bold('tgbase migrate')} to initialize the database
-  ${chalk.cyan('3.')} Import and use: ${chalk.gray("import { createClient } from 'tgbase'")}
+  ${chalk.cyan('2.')} Run ${chalk.bold('gramobase migrate')} to initialize the database
+  ${chalk.cyan('3.')} Import and use: ${chalk.gray("import { createClient } from 'gramobase'")}
 `);
   });
 
-// ─── tgbase migrate ───────────────────────────────────────────────────────
+// ─── gramobase migrate ───────────────────────────────────────────────────────
 
 program
   .command('migrate')
@@ -106,7 +106,7 @@ program
   .action(async (opts) => {
     const spinner = ora('Loading migrations...').start();
     try {
-      const configPath = join(process.cwd(), 'tgbase.config.ts');
+      const configPath = join(process.cwd(), 'gramobase.config.ts');
 
       spinner.text = 'Connecting...';
       spinner.succeed('Migration runner ready (run in your project after build)');
@@ -115,7 +115,7 @@ program
     }
   });
 
-// ─── tgbase status ────────────────────────────────────────────────────────
+// ─── gramobase status ────────────────────────────────────────────────────────
 
 program
   .command('status')
@@ -123,11 +123,11 @@ program
   .action(async () => {
     const spinner = ora('Checking status...').start();
     try {
-      const token = process.env['TGBASE_BOT_TOKEN'];
-      const channelId = process.env['TGBASE_CHANNEL_ID'];
+      const token = process.env['GRAMOBASE_BOT_TOKEN'];
+      const channelId = process.env['GRAMOBASE_CHANNEL_ID'];
 
       if (!token || !channelId) {
-        spinner.fail('.env not found — run tgbase init first');
+        spinner.fail('.env not found — run gramobase init first');
         return;
       }
 
@@ -150,7 +150,7 @@ program
     }
   });
 
-// ─── tgbase generate ──────────────────────────────────────────────────────
+// ─── gramobase generate ──────────────────────────────────────────────────────
 
 program
   .command('generate <name>')
@@ -181,7 +181,7 @@ program
     }).join('\n');
 
     const output = `import { z } from 'zod';
-import { createClient } from 'tgbase';
+import { createClient } from 'gramobase';
 
 export const ${safeName}Schema = z.object({
 ${schemaFields}
@@ -196,20 +196,20 @@ export type ${capitalize(safeName)} = z.infer<typeof ${safeName}Schema>;
 `;
 
     // Path is constructed from sanitized name only — no user-controlled path traversal
-    const dir = join(process.cwd(), 'tgbase');
+    const dir = join(process.cwd(), 'gramobase');
     const outPath = join(dir, `${safeName}.schema.ts`);
 
     if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
     writeFileSync(outPath, output);
 
-    console.log(`\n  ${chalk.green('✓')} Generated ${chalk.cyan(`tgbase/${safeName}.schema.ts`)}\n`);
+    console.log(`\n  ${chalk.green('✓')} Generated ${chalk.cyan(`gramobase/${safeName}.schema.ts`)}\n`);
   });
 
-// ─── tgbase studio ────────────────────────────────────────────────────────
+// ─── gramobase studio ────────────────────────────────────────────────────────
 
 program
   .command('studio')
-  .description('Open the tgbase browser studio UI')
+  .description('Open the gramobase browser studio UI')
   .option('--port <port>', 'Port to listen on', '4242')
   .action((opts) => {
     // Validate port is numeric and in valid range
@@ -218,9 +218,9 @@ program
       console.error(chalk.red('  Error: Invalid port number'));
       process.exit(1);
     }
-    console.log(`\n  ${chalk.bold.cyan('tgbase studio')}\n`);
+    console.log(`\n  ${chalk.bold.cyan('gramobase studio')}\n`);
     console.log(`  ${chalk.gray('Open')} ${chalk.cyan(`http://localhost:${port}`)} ${chalk.gray('in your browser')}\n`);
-    console.log(chalk.yellow('  Studio UI coming in v0.2.0 — contribute at github.com/yourusername/tgbase\n'));
+    console.log(chalk.yellow('  Studio UI coming in v0.2.0 — contribute at github.com/yourusername/gramobase\n'));
   });
 
 function capitalize(s: string): string {

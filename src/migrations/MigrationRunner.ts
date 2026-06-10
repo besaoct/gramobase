@@ -1,7 +1,7 @@
 import { Migration } from '../types/index.js';
 import { BotWorkerPool } from '../workers/BotWorkerPool.js';
 
-const MIGRATION_TAG = '__TGBASE_MIGRATIONS__';
+const MIGRATION_TAG = '__GRAMOBASE_MIGRATIONS__';
 
 interface MigrationRecord {
   version: number;
@@ -70,7 +70,7 @@ export class MigrationRunner {
     const applied = await this.loadHistory();
     const appliedVersions = new Set(applied.map((m) => m.version));
 
-    console.log('\n  tgbase migration status\n');
+    console.log('\n  gramobase migration status\n');
     for (const m of migrations.sort((a, b) => a.version - b.version)) {
       const status = appliedVersions.has(m.version) ? '✓' : '○';
       const appliedAt = applied.find((a) => a.version === m.version)?.appliedAt ?? '';

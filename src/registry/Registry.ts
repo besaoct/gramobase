@@ -2,7 +2,7 @@ import { randomUUID } from 'crypto';
 import { Lease } from '../types/index.js';
 import { BotWorkerPool } from '../workers/BotWorkerPool.js';
 
-const REGISTRY_TAG = '__TGBASE_REGISTRY__';
+const REGISTRY_TAG = '__GRAMOBASE_REGISTRY__';
 const LEASE_TTL_MS = 30_000;
 const HEARTBEAT_MS = 10_000;
 
@@ -15,7 +15,7 @@ interface RegistryState {
 /**
  * Registry uses a pinned Telegram message as a distributed lock.
  *
- * When a tgbase instance starts up, it reads the registry message.
+ * When a gramobase instance starts up, it reads the registry message.
  * If no lease exists or the existing lease is expired, it writes a new
  * lease with its own instanceId and begins sending heartbeats.
  *
@@ -49,7 +49,7 @@ export class Registry {
       const lease = existing.activeLease;
       if (lease.instanceId !== this.instanceId && Date.now() < lease.expiresAt) {
         throw new Error(
-          `[tgbase Registry] Another instance (${lease.instanceId}) holds the write lease until ${new Date(lease.expiresAt).toISOString()}. ` +
+          `[gramobase Registry] Another instance (${lease.instanceId}) holds the write lease until ${new Date(lease.expiresAt).toISOString()}. ` +
             `Use Registry.forceRelease() to break a stale lease.`
         );
       }

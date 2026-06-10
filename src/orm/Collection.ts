@@ -4,7 +4,7 @@ import {
   Filter,
   FindOptions,
   UpdateOperators,
-  TgBaseDocument,
+  GramoBaseDocument,
   CollectionConfig,
   WithId,
 } from '../types/index.js';
@@ -62,7 +62,7 @@ export class Collection<T extends z.ZodType> {
 
   async insertOne(data: z.infer<T>): Promise<DocOf<T>> {
     const validated = this.config.schema.parse(data) as z.infer<T>;
-    const doc: TgBaseDocument = {
+    const doc: GramoBaseDocument = {
       ...validated,
       _id: randomUUID(),
       _collection: this.name,
@@ -210,7 +210,7 @@ export class Collection<T extends z.ZodType> {
   }
 
   private async applyUpdate(
-    doc: TgBaseDocument,
+    doc: GramoBaseDocument,
     update: UpdateOperators<unknown>
   ): Promise<DocOf<T>> {
     const updated = { ...doc, _updatedAt: new Date().toISOString() };
@@ -243,7 +243,7 @@ export class Collection<T extends z.ZodType> {
 
     const newMsgId = await this.storage.updateDocument(
       updated._msgId,
-      updated as TgBaseDocument,
+      updated as GramoBaseDocument,
       this.channelId
     );
     updated._msgId = newMsgId;

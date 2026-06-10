@@ -65,12 +65,12 @@ desktop.ini
 *.sw?
 *.swp
 
-# ─── tgbase project-specific ──────────────────────────────────────────────────
+# ─── gramobase project-specific ──────────────────────────────────────────────────
 # User-generated config and schema files (not part of the library source)
-tgbase.config.ts
-tgbase.config.js
-tgbase/migrations/
-tgbase/*.schema.ts
+gramobase.config.ts
+gramobase.config.js
+gramobase/migrations/
+gramobase/*.schema.ts
 
 # ─── Misc ─────────────────────────────────────────────────────────────────────
 .cache/

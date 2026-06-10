@@ -52,7 +52,7 @@ describe('MigrationRunner', () => {
     expect(upMigration1).toHaveBeenCalledWith(dbMock);
     expect(upMigration2).toHaveBeenCalledWith(dbMock);
     expect(sentMessages).toHaveLength(2); // two history checkpoints
-    expect(sentMessages[1]).toContain('__TGBASE_MIGRATIONS__');
+    expect(sentMessages[1]).toContain('__GRAMOBASE_MIGRATIONS__');
     expect(sentMessages[1]).toContain('m2');
   });
 
@@ -61,7 +61,7 @@ describe('MigrationRunner', () => {
     chatState.pinned_messages = [
       {
         message_id: 123,
-        text: `__TGBASE_MIGRATIONS__\n${JSON.stringify([
+        text: `__GRAMOBASE_MIGRATIONS__\n${JSON.stringify([
           { version: 1, name: 'm1', appliedAt: new Date().toISOString() },
         ])}`,
       },
@@ -86,7 +86,7 @@ describe('MigrationRunner', () => {
     chatState.pinned_messages = [
       {
         message_id: 123,
-        text: `__TGBASE_MIGRATIONS__\n${JSON.stringify([
+        text: `__GRAMOBASE_MIGRATIONS__\n${JSON.stringify([
           { version: 1, name: 'm1', appliedAt: new Date().toISOString() },
           { version: 2, name: 'm2', appliedAt: new Date().toISOString() },
         ])}`,

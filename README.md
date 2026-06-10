@@ -1,9 +1,9 @@
-# tgbase
+# gramobase
 
-[![Build Status](https://img.shields.io/github/actions/workflow/status/besaoct/tgbase/build.yml?branch=main&style=flat-square)](https://github.com/besaoct/tgbase/actions)
-[![NPM Version](https://img.shields.io/npm/v/tgbase?color=blue&style=flat-square)](https://www.npmjs.com/package/tgbase)
-[![License](https://img.shields.io/github/license/besaoct/tgbase?style=flat-square)](https://github.com/besaoct/tgbase/blob/main/LICENSE)
-[![Tests Status](https://img.shields.io/badge/tests-33%20passed-brightgreen?style=flat-square)](https://github.com/besaoct/tgbase/actions)
+[![Build Status](https://img.shields.io/github/actions/workflow/status/besaoct/gramobase/build.yml?branch=main&style=flat-square)](https://github.com/besaoct/gramobase/actions)
+[![NPM Version](https://img.shields.io/npm/v/gramobase?color=blue&style=flat-square)](https://www.npmjs.com/package/gramobase)
+[![License](https://img.shields.io/github/license/besaoct/gramobase?style=flat-square)](https://github.com/besaoct/gramobase/blob/main/LICENSE)
+[![Tests Status](https://img.shields.io/badge/tests-33%20passed-brightgreen?style=flat-square)](https://github.com/besaoct/gramobase/actions)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](https://makeapullrequest.com)
 
 **Telegram as a free, infinite, production-grade backend database.**
@@ -11,7 +11,7 @@
 Every Telegram channel is a collection. Every message is a document. Zero infrastructure needed — all you need is a free Telegram account.
 
 ```ts
-import { createClient } from 'tgbase';
+import { createClient } from 'gramobase';
 import { z } from 'zod';
 
 const db = await createClient({
@@ -29,9 +29,9 @@ const user = await users.findOne({ name: { $eq: 'Aarav' } });
 
 ---
 
-## Why tgbase?
+## Why gramobase?
 
-| Feature | tgbase | Firebase free | Supabase free |
+| Feature | gramobase | Firebase free | Supabase free |
 |---|---|---|---|
 | Storage | **Unlimited** | 1GB | 500MB |
 | Reads/writes | 30/s per bot, scales with bot count | 50K/day | 500MB bandwidth |
@@ -46,7 +46,7 @@ const user = await users.findOne({ name: { $eq: 'Aarav' } });
 ## Installation
 
 ```bash
-npm install tgbase
+npm install gramobase
 ```
 
 ### Running Tests
@@ -60,10 +60,10 @@ npm run test
 ### Setup
 
 ```bash
-npx tgbase init
+npx gramobase init
 ```
 
-This walks you through entering your bot token and channel ID, creates `.env` and `tgbase.config.ts`.
+This walks you through entering your bot token and channel ID, creates `.env` and `gramobase.config.ts`.
 
 **Prerequisites:**
 1. Create a bot via [@BotFather](https://t.me/BotFather) on Telegram — takes 30 seconds
@@ -213,7 +213,7 @@ await db.migrate(migrations);
 ### Anti-flood bot pool
 
 ```ts
-// Pass multiple bot tokens — tgbase round-robins and backs off per token
+// Pass multiple bot tokens — gramobase round-robins and backs off per token
 const db = await createClient({
   botToken: [
     process.env.BOT_TOKEN_1!,
@@ -273,13 +273,13 @@ Developer API (ORM, Auth, Files, Realtime)
 ## CLI
 
 ```bash
-npx tgbase init                   # interactive setup wizard
-npx tgbase status                 # check bot + channel connectivity
-npx tgbase migrate                # run pending migrations
-npx tgbase migrate --rollback 1   # rollback last migration
-npx tgbase migrate --status       # show migration history
-npx tgbase generate post --fields "title:string,views:number"
-npx tgbase studio                 # open browser UI (v0.2)
+npx gramobase init                   # interactive setup wizard
+npx gramobase status                 # check bot + channel connectivity
+npx gramobase migrate                # run pending migrations
+npx gramobase migrate --rollback 1   # rollback last migration
+npx gramobase migrate --status       # show migration history
+npx gramobase generate post --fields "title:string,views:number"
+npx gramobase studio                 # open browser UI (v0.2)
 ```
 
 ---
@@ -305,7 +305,7 @@ const db = createClient({
 
 ## Disclaimer
 
-tgbase is designed for prototypes, hobby projects, and small-to-medium applications. It is not a replacement for PostgreSQL or MongoDB in high-traffic production systems. Data lives on Telegram's infrastructure — do not store sensitive PII without encryption.
+gramobase is designed for prototypes, hobby projects, and small-to-medium applications. It is not a replacement for PostgreSQL or MongoDB in high-traffic production systems. Data lives on Telegram's infrastructure — do not store sensitive PII without encryption.
 
 ---
 

@@ -3,9 +3,9 @@ import { defineConfig } from 'tsup';
 export default defineConfig({
   entry: {
     index: 'src/index.ts',
-    'auth/index': 'src/auth/TgBaseAuth.ts',
+    'auth/index': 'src/auth/GramoBaseAuth.ts',
     'migrations/index': 'src/migrations/MigrationRunner.ts',
-    'bin/tgbase': 'bin/tgbase.ts',
+    'bin/gramobase': 'bin/gramobase.ts',
   },
   format: ['cjs', 'esm'],
   dts: true,
@@ -30,6 +30,6 @@ export default defineConfig({
     'dotenv',
   ],
   banner: {
-    js: '// tgbase — Telegram as your free, infinite backend',
+    js: '// gramobase — Telegram as your free, infinite backend',
   },
 });

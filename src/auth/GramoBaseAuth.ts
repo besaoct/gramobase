@@ -35,7 +35,7 @@ function resolveJwtSecret(configSecret?: string): string {
   if (existsSync(secretFile)) return readFileSync(secretFile, 'utf-8').trim();
   const ephemeral = randomBytes(32).toString('hex');
   console.warn(
-    '[tgbase Auth] WARNING: No JWT_SECRET provided. Using an ephemeral random secret. ' +
+    '[gramobase Auth] WARNING: No JWT_SECRET provided. Using an ephemeral random secret. ' +
     'Tokens will be invalidated on restart. Set JWT_SECRET env variable for production!'
   );
   return ephemeral;
@@ -52,7 +52,7 @@ function validatePasswordStrength(password: string): void {
   // TODO(security): Consider rejecting known breached passwords via HaveIBeenPwned API.
 }
 
-export class TgBaseAuth {
+export class GramoBaseAuth {
   private readonly DEFAULT_ROUNDS = 12;
   private readonly resolvedSecret: string;
 

@@ -1,17 +1,17 @@
 import { z } from 'zod';
-import { TgBaseConfig, CollectionConfig, AuthConfig, UploadOptions, FileRecord, Migration } from './types/index.js';
+import { GramoBaseConfig, CollectionConfig, AuthConfig, UploadOptions, FileRecord, Migration } from './types/index.js';
 import { BotWorkerPool } from './workers/BotWorkerPool.js';
 import { HotCache } from './cache/HotCache.js';
 import { TelegramStorage } from './storage/TelegramStorage.js';
 import { WriteAheadLog } from './wal/WriteAheadLog.js';
 import { Registry } from './registry/Registry.js';
 import { Collection } from './orm/Collection.js';
-import { TgBaseAuth } from './auth/TgBaseAuth.js';
+import { GramoBaseAuth } from './auth/GramoBaseAuth.js';
 import { RealtimeManager } from './realtime/RealtimeManager.js';
 import { MigrationRunner } from './migrations/MigrationRunner.js';
 import { randomUUID } from 'crypto';
 
-export class TgBase {
+export class GramoBase {
   private pool: BotWorkerPool;
   private cache: HotCache;
   private storage: TelegramStorage;
@@ -21,9 +21,9 @@ export class TgBase {
   private migrations: MigrationRunner;
   private collections: Map<string, Collection<z.ZodType>> = new Map();
   private initialized = false;
-  private config: TgBaseConfig;
+  private config: GramoBaseConfig;
 
-  constructor(config: TgBaseConfig) {
+  constructor(config: GramoBaseConfig) {
     this.config = config;
     const tokens = Array.isArray(config.botToken)
       ? config.botToken
@@ -79,11 +79,11 @@ export class TgBase {
     // WAL replay — recover any uncommitted writes
     const walEntries = await this.wal.replay();
     if (walEntries.length > 0 && this.config.debug) {
-      console.log(`[tgbase] Replaying ${walEntries.length} WAL entries`);
+      console.log(`[gramobase] Replaying ${walEntries.length} WAL entries`);
     }
 
     this.initialized = true;
-    if (this.config.debug) console.log('[tgbase] Connected ✓');
+    if (this.config.debug) console.log('[gramobase] Connected ✓');
     return this;
   }
 
@@ -118,7 +118,7 @@ export class TgBase {
 
   // ─── Auth factory ─────────────────────────────────────────────────────
 
-  createAuth(config: AuthConfig): TgBaseAuth {
+  createAuth(config: AuthConfig): GramoBaseAuth {
     const UserSchema = z.object({
       email: z.string().email(),
       passwordHash: z.string(),
@@ -128,8 +128,8 @@ export class TgBase {
       updatedAt: z.string(),
     });
 
-    const users = this.collection('__tgbase_users__', { schema: UserSchema });
-    return new TgBaseAuth(users as any, config);
+    const users = this.collection('__gramobase_users__', { schema: UserSchema });
+    return new GramoBaseAuth(users as any, config);
   }
 
   // ─── File storage ─────────────────────────────────────────────────────
@@ -156,7 +156,7 @@ export class TgBase {
     };
 
     // Store file record in a dedicated files collection
-    const files = this.collection('__tgbase_files__', {
+    const files = this.collection('__gramobase_files__', {
       schema: z.object({
         _id: z.string(),
         fileId: z.string(),
@@ -217,12 +217,12 @@ export class TgBase {
 
 // ─── Convenience factory ───────────────────────────────────────────────────
 
-export function createClient(config: TgBaseConfig): TgBase {
-  return new TgBase(config);
+export function createClient(config: GramoBaseConfig): GramoBase {
+  return new GramoBase(config);
 }
 
 // Re-exports
-export { TgBaseAuth } from './auth/TgBaseAuth.js';
+export { GramoBaseAuth } from './auth/GramoBaseAuth.js';
 export { Collection } from './orm/Collection.js';
 export { RealtimeManager } from './realtime/RealtimeManager.js';
 export type * from './types/index.js';

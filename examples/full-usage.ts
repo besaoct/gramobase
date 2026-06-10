@@ -1,12 +1,12 @@
 /**
- * tgbase — Full usage example
+ * gramobase — Full usage example
  * Demonstrates: ORM, auth, file uploads, realtime, migrations
  */
 
-import { createClient } from 'tgbase';
+import { createClient } from 'gramobase';
 import { z } from 'zod';
 import { readFileSync } from 'fs';
-import type { Migration } from 'tgbase';
+import type { Migration } from 'gramobase';
 
 // ─── 1. Connect ────────────────────────────────────────────────────────────
 

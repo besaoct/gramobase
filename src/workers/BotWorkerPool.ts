@@ -28,7 +28,7 @@ export class BotWorkerPool extends EventEmitter {
     super();
     this.debug = debug;
 
-    if (tokens.length === 0) throw new Error('[tgbase] At least one bot token required');
+    if (tokens.length === 0) throw new Error('[gramobase] At least one bot token required');
 
     for (let i = 0; i < tokens.length; i++) {
       const token = tokens[i]!;
@@ -73,7 +73,7 @@ export class BotWorkerPool extends EventEmitter {
                 this.emit('worker:rotate', idx);
                 const retryAfter = this.extractRetryAfter(err) * 1000;
                 if (this.debug) {
-                  console.warn(`[tgbase] Worker ${idx} flood limited, retrying after ${retryAfter}ms`);
+                  console.warn(`[gramobase] Worker ${idx} flood limited, retrying after ${retryAfter}ms`);
                 }
                 await this.sleep(retryAfter);
                 throw err;
@@ -91,7 +91,7 @@ export class BotWorkerPool extends EventEmitter {
             maxTimeout: 30_000,
             onFailedAttempt: (error) => {
               if (this.debug) {
-                console.warn(`[tgbase] Attempt ${error.attemptNumber} failed:`, error.message);
+                console.warn(`[gramobase] Attempt ${error.attemptNumber} failed:`, error.message);
               }
             },
           }

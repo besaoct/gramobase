@@ -1,11 +1,11 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { TgBaseAuth } from './TgBaseAuth.js';
+import { GramoBaseAuth } from './GramoBaseAuth.js';
 import * as bcrypt from 'bcryptjs';
 
-describe('TgBaseAuth', () => {
+describe('GramoBaseAuth', () => {
   let mockUsersList: any[] = [];
   let mockUsersCollection: any;
-  let auth: TgBaseAuth;
+  let auth: GramoBaseAuth;
 
   beforeEach(() => {
     mockUsersList = [];
@@ -40,7 +40,7 @@ describe('TgBaseAuth', () => {
       }),
     };
 
-    auth = new TgBaseAuth(mockUsersCollection as any, {
+    auth = new GramoBaseAuth(mockUsersCollection as any, {
       jwtSecret: 'testsecret12345678901234567890123456789012',
       bcryptRounds: 4, // use fewer rounds for speed in tests
     });

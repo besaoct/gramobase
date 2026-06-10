@@ -1,5 +1,5 @@
 import EventEmitter from 'eventemitter3';
-import { TgBaseEvent } from '../types/index.js';
+import { GramoBaseEvent } from '../types/index.js';
 import { BotWorkerPool } from '../workers/BotWorkerPool.js';
 
 type Unsubscribe = () => void;
@@ -42,7 +42,7 @@ export class RealtimeManager extends EventEmitter {
   // ─── Subscribe helpers ────────────────────────────────────────────────
 
   onInsert<T>(collection: string, cb: (doc: T) => void): Unsubscribe {
-    const handler = (ev: TgBaseEvent) => {
+    const handler = (ev: GramoBaseEvent) => {
       if (ev.type === 'insert' && ev.collection === collection) {
         cb(ev.doc as T);
       }
@@ -52,7 +52,7 @@ export class RealtimeManager extends EventEmitter {
   }
 
   onUpdate<T>(collection: string, cb: (id: string, changes: Partial<T>, doc: T) => void): Unsubscribe {
-    const handler = (ev: TgBaseEvent) => {
+    const handler = (ev: GramoBaseEvent) => {
       if (ev.type === 'update' && ev.collection === collection) {
         cb(ev.id, ev.changes as Partial<T>, ev.doc as T);
       }
@@ -62,7 +62,7 @@ export class RealtimeManager extends EventEmitter {
   }
 
   onDelete(collection: string, cb: (id: string) => void): Unsubscribe {
-    const handler = (ev: TgBaseEvent) => {
+    const handler = (ev: GramoBaseEvent) => {
       if (ev.type === 'delete' && ev.collection === collection) {
         cb(ev.id);
       }
@@ -71,8 +71,8 @@ export class RealtimeManager extends EventEmitter {
     return () => this.off('event', handler);
   }
 
-  onAny(cb: (ev: TgBaseEvent) => void): Unsubscribe {
-    const handler = (ev: TgBaseEvent) => cb(ev);
+  onAny(cb: (ev: GramoBaseEvent) => void): Unsubscribe {
+    const handler = (ev: GramoBaseEvent) => cb(ev);
     this.on('event', handler);
     return () => this.off('event', handler);
   }
@@ -88,7 +88,7 @@ export class RealtimeManager extends EventEmitter {
       res.setHeader('X-Content-Type-Options', 'nosniff');
       res.flushHeaders?.();
 
-      const send = (ev: TgBaseEvent) => {
+      const send = (ev: GramoBaseEvent) => {
         if (!collection || ('collection' in ev && ev.collection === collection)) {
           // JSON.stringify ensures proper output encoding — no raw user data in stream
           res.write(`data: ${JSON.stringify(ev)}\n\n`);
@@ -107,7 +107,7 @@ export class RealtimeManager extends EventEmitter {
 
   // ─── Internal event dispatch ──────────────────────────────────────────
 
-  dispatch(event: TgBaseEvent): void {
+  dispatch(event: GramoBaseEvent): void {
     this.emit('event', event);
     if (this.debug) {
       // Only log event type — do NOT log event payload to avoid leaking sensitive data
@@ -146,17 +146,17 @@ export class RealtimeManager extends EventEmitter {
   }
 
   private processUpdate(update: any): void {
-    // Parse channel_post messages that are tgbase records
+    // Parse channel_post messages that are gramobase records
     const msg = update.channel_post ?? update.message;
-    if (!msg?.text?.includes('"__tgbase"')) return;
+    if (!msg?.text?.includes('"__gramobase"')) return;
 
     try {
       const payload = JSON.parse(msg.text);
       if (payload.__event) {
-        this.dispatch(payload.__event as TgBaseEvent);
+        this.dispatch(payload.__event as GramoBaseEvent);
       }
     } catch {
-      // Not a tgbase event message
+      // Not a gramobase event message
     }
   }
 }

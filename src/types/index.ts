@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 // ─── Core document types ──────────────────────────────────────────────────
 
-export interface TgBaseDocument {
+export interface GramoBaseDocument {
   _id: string;
   _collection: string;
   _msgId: number;
@@ -11,7 +11,7 @@ export interface TgBaseDocument {
   [key: string]: unknown;
 }
 
-export type WithId<T> = T & TgBaseDocument;
+export type WithId<T> = T & GramoBaseDocument;
 
 // ─── Collection config ────────────────────────────────────────────────────
 
@@ -143,7 +143,7 @@ export interface FileRecord {
 
 // ─── Realtime events ──────────────────────────────────────────────────────
 
-export type TgBaseEvent =
+export type GramoBaseEvent =
   | { type: 'insert'; collection: string; doc: unknown }
   | { type: 'update'; collection: string; id: string; changes: unknown; doc: unknown }
   | { type: 'delete'; collection: string; id: string }
@@ -161,7 +161,7 @@ export interface Migration {
 
 // ─── Top-level config ─────────────────────────────────────────────────────
 
-export interface TgBaseConfig {
+export interface GramoBaseConfig {
   /** Bot token or array of tokens for pool rotation */
   botToken: string | string[];
   /** Primary storage channel ID */

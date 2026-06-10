@@ -60,7 +60,7 @@ describe('Registry Distributed Leases', () => {
     const anotherInstanceId = 'other-uuid';
     chatState.pinned_message = {
       message_id: 999,
-      text: `__TGBASE_REGISTRY__\n${JSON.stringify({
+      text: `__GRAMOBASE_REGISTRY__\n${JSON.stringify({
         activeLease: {
           instanceId: anotherInstanceId,
           acquiredAt: Date.now(),
