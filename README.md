@@ -3,7 +3,7 @@
 [![Build Status](https://img.shields.io/github/actions/workflow/status/besaoct/gramobase/build.yml?branch=main&style=flat-square)](https://github.com/besaoct/gramobase/actions)
 [![NPM Version](https://img.shields.io/npm/v/gramobase?color=blue&style=flat-square)](https://www.npmjs.com/package/gramobase)
 [![License](https://img.shields.io/github/license/besaoct/gramobase?style=flat-square)](https://github.com/besaoct/gramobase/blob/main/LICENSE)
-[![Tests Status](https://img.shields.io/badge/tests-40%20passed-brightgreen?style=flat-square)](https://github.com/besaoct/gramobase/actions)
+[![Tests Status](https://img.shields.io/github/actions/workflow/status/besaoct/gramobase/build.yml?branch=main&label=tests&style=flat-square)](https://github.com/besaoct/gramobase/actions)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](https://makeapullrequest.com)
 
 **Telegram as a free, infinite, production-grade backend database.**
