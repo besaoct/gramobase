@@ -1,6 +1,6 @@
 # gramobase
 
-[![npm version](https://img.shields.io/npm/v/gramobase?style=flat-square&logo=npm&label=gramobase&color=red)](https://www.npmjs.com/package/gramobase)
+[![npm version](https://img.shields.io/npm/v/gramobase?style=flat-square&logo=npm&label=gramobase&color=blue)](https://www.npmjs.com/package/gramobase)
 [![CI/CD Status](https://github.com/besaoct/gramobase/actions/workflows/build.yml/badge.svg)](https://github.com/besaoct/gramobase/actions)
 [![License: MIT](https://img.shields.io/badge/License-MIT-orange.svg)](https://github.com/besaoct/gramobase/blob/main/LICENSE)
 [![Tests Passed](https://img.shields.io/badge/Tests-40%2F40%20Passed-brightgreen.svg)](https://github.com/besaoct/gramobase/actions)
