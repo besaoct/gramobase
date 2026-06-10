@@ -1,7 +1,7 @@
 import { createClient } from 'gramobase';
 import { z } from 'zod';
 
-let dbClient: any = null;
+const globalForDb = globalThis as unknown as { dbClient: any };
 
 export const TodoSchema = z.object({
   text: z.string(),
@@ -10,7 +10,7 @@ export const TodoSchema = z.object({
 });
 
 export async function getDb() {
-  if (!dbClient) {
+  if (!globalForDb.dbClient) {
     if (!process.env.GRAMOBASE_BOT_TOKEN_1 || !process.env.GRAMOBASE_CHANNEL_ID) {
       throw new Error('Missing GRAMOBASE_BOT_TOKEN_1 or GRAMOBASE_CHANNEL_ID in environment variables');
     }
@@ -19,9 +19,15 @@ export async function getDb() {
       botToken: process.env.GRAMOBASE_BOT_TOKEN_1,
       channelId: process.env.GRAMOBASE_CHANNEL_ID,
     });
-    dbClient = await client.connect();
+
+    try {
+      globalForDb.dbClient = await client.connect();
+    } catch (err) {
+      globalForDb.dbClient = null; // reset so next request retries
+      throw err;
+    }
   }
-  return dbClient;
+  return globalForDb.dbClient;
 }
 
 export async function getTodosCollection() {

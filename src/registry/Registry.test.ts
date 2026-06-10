@@ -69,7 +69,7 @@ describe('Registry Distributed Leases', () => {
       })}`,
     };
 
-    await expect(registry.acquireWriteLease()).rejects.toThrow('Another instance');
+    await expect(registry.acquireWriteLease({ wait: false })).rejects.toThrow('Another instance');
   });
 
   it('should allow force releasing a lease', async () => {

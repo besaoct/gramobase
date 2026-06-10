@@ -31,20 +31,21 @@ export class GramoBase {
 
     this.pool = new BotWorkerPool(tokens, config.concurrency ?? 25, config.debug ?? false);
     this.cache = new HotCache(config.cacheMaxBytes, config.cacheTtlMs);
+    this.registry = new Registry(
+      this.pool,
+      config.indexChannelId ?? config.channelId,
+      config.debug ?? false
+    );
     this.storage = new TelegramStorage(
       this.pool,
       config.channelId,
+      this.registry,
       config.encryptionKey,
       config.debug ?? false
     );
     this.wal = new WriteAheadLog(
       this.pool,
       config.walChannelId ?? config.channelId,
-      config.debug ?? false
-    );
-    this.registry = new Registry(
-      this.pool,
-      config.indexChannelId ?? config.channelId,
       config.debug ?? false
     );
     this.realtime = new RealtimeManager(

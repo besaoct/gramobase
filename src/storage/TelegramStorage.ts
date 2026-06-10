@@ -1,6 +1,7 @@
 import { createCipheriv, createDecipheriv, randomBytes, createHash } from 'crypto';
 import { BotWorkerPool } from '../workers/BotWorkerPool.js';
 import { GramoBaseDocument } from '../types/index.js';
+import { Registry } from '../registry/Registry.js';
 
 const INDEX_TAG = '__GRAMOBASE_INDEX__';
 const DOC_TAG = '__GRAMOBASE_DOC__';
@@ -32,6 +33,7 @@ export class TelegramStorage {
   constructor(
     private pool: BotWorkerPool,
     private defaultChannelId: string,
+    private registry: Registry,
     encryptionKey?: string,
     private debug = false
   ) {
@@ -42,8 +44,42 @@ export class TelegramStorage {
 
   // ─── Index management ─────────────────────────────────────────────────────
 
+  private async readRawMessageText(msgId: number, channel: string): Promise<string | null> {
+    try {
+      const msgs = await this.pool.execute((bot) =>
+        (bot as any).forwardMessages(channel, channel, [msgId])
+      ) as any;
+
+      const msg = Array.isArray(msgs) ? msgs[0] : msgs;
+      if (!msg?.text) return null;
+
+      let text = msg.text as string;
+      if (this.encryptionKey && text.startsWith('ENC:')) {
+        text = this.decrypt(text);
+      }
+      return text;
+    } catch {
+      return null;
+    }
+  }
+
   async loadIndex(collection: string, channelId?: string): Promise<IndexMessage> {
     const channel = channelId ?? this.defaultChannelId;
+
+    try {
+      const msgId = await this.registry.getCollectionIndexMsgId(collection);
+      if (msgId) {
+        const text = await this.readRawMessageText(msgId, channel);
+        if (text && text.startsWith(INDEX_TAG)) {
+          const json = text.replace(INDEX_TAG + '\n', '');
+          const parsed = JSON.parse(json) as IndexMessage;
+          this.indexMsgIds.set(collection, msgId);
+          return parsed;
+        }
+      }
+    } catch {
+      // Fallback
+    }
 
     try {
       const chat = await this.pool.execute((bot) => bot.getChat(channel)) as any;
@@ -52,8 +88,11 @@ export class TelegramStorage {
       if (chat.pinned_message?.text?.startsWith(INDEX_TAG)) {
         const json = chat.pinned_message.text.replace(INDEX_TAG + '\n', '');
         const parsed = JSON.parse(json) as IndexMessage;
-        this.indexMsgIds.set(collection, chat.pinned_message.message_id);
-        return parsed;
+        if (parsed.collection === collection) {
+          this.indexMsgIds.set(collection, chat.pinned_message.message_id);
+          await this.registry.setCollectionIndexMsgId(collection, chat.pinned_message.message_id);
+          return parsed;
+        }
       }
     } catch {
       // No pinned message or channel is empty
@@ -72,7 +111,8 @@ export class TelegramStorage {
     const channel = channelId ?? this.defaultChannelId;
     const text = `${INDEX_TAG}\n${JSON.stringify(index)}`;
 
-    const existingMsgId = this.indexMsgIds.get(index.collection);
+    const existingMsgId = this.indexMsgIds.get(index.collection) ||
+                          await this.registry.getCollectionIndexMsgId(index.collection);
 
     if (existingMsgId) {
       try {
@@ -92,11 +132,9 @@ export class TelegramStorage {
       bot.sendMessage(channel, text, { disable_notification: true })
     ) as any;
 
-    this.indexMsgIds.set(index.collection, msg.message_id);
-
-    await this.pool.execute((bot) =>
-      bot.pinChatMessage(channel, msg.message_id, { disable_notification: true })
-    );
+    const newMsgId = msg.message_id;
+    this.indexMsgIds.set(index.collection, newMsgId);
+    await this.registry.setCollectionIndexMsgId(index.collection, newMsgId);
   }
 
   // ─── Document CRUD ────────────────────────────────────────────────────────

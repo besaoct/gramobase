@@ -101,6 +101,24 @@ export async function startStudio(port: number, cwd: string = process.cwd()) {
     }
   }
 
+  // Graceful shutdown handling
+  const cleanShutdown = async () => {
+    if (db) {
+      try {
+        await db.disconnect();
+      } catch (_) {}
+      db = null;
+    }
+    server.close(() => {
+      process.exit(0);
+    });
+    // Fallback if close takes too long
+    setTimeout(() => process.exit(0), 1000);
+  };
+
+  process.once('SIGINT', cleanShutdown);
+  process.once('SIGTERM', cleanShutdown);
+
   // SSE client set
   const sseClients = new Set<http.ServerResponse>();
 
