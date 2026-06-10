@@ -33,6 +33,12 @@ jobs:
       - name: Build Bundle
         run: npm run build
 
+      - name: Generate Coverage Report
+        run: npm run coverage
+
+      - name: Upload Coverage Report
+        uses: codecov/codecov-action@v4 
+
   publish-npm:
     needs: build-and-test
     if: startsWith(github.ref, 'refs/tags/v')

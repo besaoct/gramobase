@@ -304,16 +304,28 @@ program
   .command('studio')
   .description('Open the gramobase browser studio UI')
   .option('--port <port>', 'Port to listen on', '4242')
-  .action((opts) => {
+  .action(async (opts) => {
     // Validate port is numeric and in valid range
     const port = parseInt(opts.port as string, 10);
     if (isNaN(port) || port < 1 || port > 65535) {
       console.error(chalk.red('  Error: Invalid port number'));
       process.exit(1);
     }
-    console.log(`\n  ${chalk.bold.cyan('gramobase studio')}\n`);
-    console.log(`  ${chalk.gray('Open')} ${chalk.cyan(`http://localhost:${port}`)} ${chalk.gray('in your browser')}\n`);
-    console.log(chalk.yellow('  Studio UI coming in v0.2.0 — contribute at github.com/yourusername/gramobase\n'));
+
+    const spinner = ora('Starting gramobase studio...').start();
+
+    try {
+      const { startStudio } = await import(new URL('../../dist/studio/server.js', import.meta.url).href);
+      await startStudio(port, process.cwd());
+      spinner.succeed(chalk.green('gramobase studio is running!'));
+      console.log(`
+  ${chalk.bold('Studio')}  ${chalk.cyan(`http://localhost:${port}`)}
+  ${chalk.gray('Press Ctrl+C to stop.')}
+`);
+    } catch (e: any) {
+      spinner.fail(chalk.red('Failed to start studio: ' + (e?.message || String(e))));
+      process.exit(1);
+    }
   });
 
 function capitalize(s: string): string {

@@ -4,7 +4,7 @@
 [![CI/CD Status](https://github.com/besaoct/gramobase/actions/workflows/build.yml/badge.svg)](https://github.com/besaoct/gramobase/actions)
 [![License: MIT](https://img.shields.io/badge/License-MIT-orange.svg)](https://github.com/besaoct/gramobase/blob/main/LICENSE)
 [![Tests Passed](https://img.shields.io/badge/Tests-40%2F40%20Passed-brightgreen.svg)](https://github.com/besaoct/gramobase/actions)
-[![Coverage: 100%](https://img.shields.io/badge/Coverage-100%25-brightgreen.svg)](https://github.com/besaoct/gramobase/actions)
+[![Coverage](https://codecov.io/gh/besaoct/gramobase/branch/main/graph/badge.svg)](https://codecov.io/gh/besaoct/gramobase)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](https://github.com/besaoct/gramobase/pulls)
 
 **Telegram as a free, infinite, production-grade backend database.**
@@ -308,8 +308,24 @@ npx gramobase migrate                # run pending migrations
 npx gramobase migrate --rollback 1   # rollback last migration
 npx gramobase migrate --status       # show migration history
 npx gramobase generate post --fields "title:string,views:number"
-npx gramobase studio                 # open browser UI (v0.2)
+npx gramobase studio                 # open browser UI (see below)
+npx gramobase studio --port 9000     # custom port
 ```
+
+---
+
+## gramobase Studio
+
+`npx gramobase studio` spins up a local browser admin panel at **http://localhost:4242**. Zero extra dependencies — it reads your `.env` and starts a Node HTTP server backed by a real live `GramoBase` client.
+
+**Features:**
+- 🔍 **Collection Browser** — Paginated table view of every document in any collection
+- 📋 **Sortable Columns** — Click any column header to sort ASC/DESC
+- 🔎 **Filter Bar** — Filter with `field:value` syntax or free-text regex search
+- 📄 **JSON Inspector** — Click any row to open a full syntax-highlighted document drawer
+- 📡 **Realtime Feed** — Live SSE stream of all insert/update/delete/WAL events
+- ⚡ **Stats Dashboard** — Cache hit rate, bytes used, worker pool status, token count
+- 🤖 **Bot Info Panel** — Bot username, channel ID, token pool capacity
 
 ---
 

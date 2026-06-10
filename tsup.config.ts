@@ -6,6 +6,7 @@ export default defineConfig({
     'auth/index': 'src/auth/GramoBaseAuth.ts',
     'migrations/index': 'src/migrations/MigrationRunner.ts',
     'react/index': 'src/react/index.ts',
+    'studio/server': 'src/studio/server.ts',
     'bin/gramobase': 'bin/gramobase.ts',
   },
   format: ['cjs', 'esm'],
