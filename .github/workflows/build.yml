@@ -37,6 +37,8 @@ jobs:
     needs: build-and-test
     if: startsWith(github.ref, 'refs/tags/v')
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v4
 
@@ -57,41 +59,7 @@ jobs:
         env:
            NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-  publish-gpr:
-    needs: build-and-test
-    if: startsWith(github.ref, 'refs/tags/v')
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
         with:
-          node-version: 24
-          registry-url: 'https://npm.pkg.github.com'
-          scope: '@besaoct'
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Rewrite package.json for GPR
-        run: |
-          node -e "
-          const fs = require('fs');
-          const pkg = JSON.parse(fs.readFileSync('package.json', 'utf8'));
-          pkg.name = '@besaoct/gramobase';
-          pkg.publishConfig = { registry: 'https://npm.pkg.github.com' };
-          fs.writeFileSync('package.json', JSON.stringify(pkg, null, 2));
-          console.log('Successfully rewrote package.json for GitHub Packages publishing.');
-          "
-
-      - name: Build Bundle
-        run: npm run build
-
-      - name: Publish to GitHub Packages
-        run: npm publish
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          generate_release_notes: true
