@@ -1,6 +1,33 @@
 // gramobase studio — self-contained browser UI
 // Returns the full HTML page as a string — no bundler needed.
 
+// ─── Inline Lucide-style SVG icons ──────────────────────────────────────────
+const ico = {
+  db:       `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14a9 3 0 0 0 18 0V5"/><path d="M3 12a9 3 0 0 0 18 0"/></svg>`,
+  gauge:    `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a10 10 0 1 0 10 10"/><path d="M12 2v4"/><path d="m4.93 4.93 2.83 2.83"/><path d="M22 12h-4"/><path d="m15 9 3-3"/><circle cx="12" cy="12" r="3"/></svg>`,
+  radio:    `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.9 19.1C1 15.2 1 8.8 4.9 4.9"/><path d="M7.8 16.2c-2.3-2.3-2.3-6.1 0-8.5"/><circle cx="12" cy="12" r="2"/><path d="M16.2 7.8c2.3 2.3 2.3 6.1 0 8.5"/><path d="M19.1 4.9C23 8.8 23 15.2 19.1 19.1"/></svg>`,
+  table:    `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3h18v18H3z"/><path d="M3 9h18"/><path d="M3 15h18"/><path d="M9 3v18"/></svg>`,
+  bot:      `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="10" rx="2"/><circle cx="12" cy="5" r="2"/><path d="M12 7v4"/><line x1="8" y1="16" x2="8" y2="16"/><line x1="16" y1="16" x2="16" y2="16"/></svg>`,
+  layers:   `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>`,
+  zap:      `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>`,
+  hdd:      `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="12" x2="2" y2="12"/><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/><line x1="6" y1="16" x2="6.01" y2="16"/><line x1="10" y1="16" x2="10.01" y2="16"/></svg>`,
+  hash:     `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="9" x2="20" y2="9"/><line x1="4" y1="15" x2="20" y2="15"/><line x1="10" y1="3" x2="8" y2="21"/><line x1="16" y1="3" x2="14" y2="21"/></svg>`,
+  grid:     `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>`,
+  refresh:  `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M3 21v-5h5"/></svg>`,
+  trash:    `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>`,
+  x:        `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>`,
+  xCircle:  `<svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>`,
+  inbox:    `<svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></svg>`,
+  activity: `<svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>`,
+  sortAsc:  `<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>`,
+  sortDesc: `<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>`,
+  chevrL:   `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>`,
+  chevrR:   `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>`,
+  logoDb:   `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14a9 3 0 0 0 18 0V5"/><path d="M3 12a9 3 0 0 0 18 0"/></svg>`,
+  check:    `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>`,
+  close2:   `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>`,
+};
+
 export function getStudioHTML(): string {
   return `<!DOCTYPE html>
 <html lang="en">
@@ -59,9 +86,10 @@ export function getStudioHTML(): string {
       width: 28px; height: 28px; border-radius: 7px;
       background: linear-gradient(135deg, var(--accent), var(--purple));
       display: flex; align-items: center; justify-content: center;
-      font-size: 15px; flex-shrink: 0;
+      flex-shrink: 0;
       box-shadow: 0 0 16px var(--accent-glow);
     }
+    .logo-icon svg { display: block; }
     .logo-text { font-weight: 700; font-size: 15px; letter-spacing: -0.3px; }
     .logo-badge {
       font-size: 9px; font-weight: 600; padding: 1px 5px; border-radius: 4px;
@@ -78,7 +106,8 @@ export function getStudioHTML(): string {
     }
     .nav-item:hover { background: var(--bg3); color: var(--text); }
     .nav-item.active { background: var(--bg4); color: var(--accent2); border-left-color: var(--accent); }
-    .nav-item-icon { width: 16px; text-align: center; font-size: 12px; }
+    .nav-item svg { flex-shrink: 0; opacity: 0.7; }
+    .nav-item.active svg, .nav-item:hover svg { opacity: 1; }
     .nav-item-count {
       margin-left: auto; font-size: 10px; padding: 1px 6px; border-radius: 10px;
       background: var(--bg4); color: var(--text3); font-family: var(--font-mono);
@@ -87,8 +116,9 @@ export function getStudioHTML(): string {
       padding: 12px 16px;
       border-top: 1px solid var(--border);
       font-size: 11px; color: var(--text3);
+      display: flex; align-items: center; gap: 6px;
     }
-    .status-dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--green); margin-right: 5px; box-shadow: 0 0 6px var(--green); }
+    .status-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); flex-shrink: 0; box-shadow: 0 0 6px var(--green); }
     .status-dot.red { background: var(--red); box-shadow: 0 0 6px var(--red); }
 
     /* ── MAIN ────────────────────────────────────────────────────── */
@@ -112,8 +142,7 @@ export function getStudioHTML(): string {
       transition: all 0.15s;
     }
     .btn:hover { background: var(--bg4); color: var(--text); border-color: var(--accent); }
-    .btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
-    .btn.primary:hover { background: var(--accent2); }
+    .btn svg { flex-shrink: 0; }
 
     /* ── CONTENT ─────────────────────────────────────────────────── */
     #content { flex: 1; overflow: hidden; position: relative; }
@@ -129,14 +158,24 @@ export function getStudioHTML(): string {
       transition: border-color 0.2s;
     }
     .stat-card:hover { border-color: var(--border2); }
-    .stat-label { font-size: 11px; color: var(--text3); font-weight: 500; letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 8px; }
+    .stat-icon-wrap {
+      width: 34px; height: 34px; border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 12px; flex-shrink: 0;
+    }
+    .stat-icon-wrap.blue  { background: rgba(59,130,246,0.12);  color: var(--accent2); }
+    .stat-icon-wrap.purple{ background: rgba(167,139,250,0.12); color: var(--purple); }
+    .stat-icon-wrap.green { background: rgba(34,197,94,0.12);   color: var(--green); }
+    .stat-icon-wrap.teal  { background: rgba(45,212,191,0.12);  color: var(--teal); }
+    .stat-icon-wrap.yellow{ background: rgba(245,158,11,0.12);  color: var(--yellow); }
+    .stat-label { font-size: 11px; color: var(--text3); font-weight: 500; letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 6px; }
     .stat-value { font-size: 26px; font-weight: 700; letter-spacing: -0.5px; }
     .stat-sub { font-size: 11px; color: var(--text3); margin-top: 4px; }
-    .stat-value.green { color: var(--green); }
-    .stat-value.blue { color: var(--accent2); }
+    .stat-value.green  { color: var(--green); }
+    .stat-value.blue   { color: var(--accent2); }
     .stat-value.purple { color: var(--purple); }
     .stat-value.yellow { color: var(--yellow); }
-    .stat-icon { font-size: 24px; margin-bottom: 10px; }
+    .stat-value.teal   { color: var(--teal); }
 
     .section-title { font-size: 13px; font-weight: 600; color: var(--text2); margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
     .section-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
@@ -151,9 +190,9 @@ export function getStudioHTML(): string {
     .info-key { font-size: 12px; color: var(--text3); width: 130px; flex-shrink: 0; }
     .info-val { font-size: 13px; font-family: var(--font-mono); color: var(--text); }
     .badge { display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: 20px; font-size: 11px; font-weight: 500; }
-    .badge.green { background: rgba(34,197,94,0.12); color: var(--green); border: 1px solid rgba(34,197,94,0.2); }
-    .badge.blue { background: rgba(59,130,246,0.12); color: var(--accent2); border: 1px solid rgba(59,130,246,0.2); }
-    .badge.yellow { background: rgba(245,158,11,0.12); color: var(--yellow); border: 1px solid rgba(245,158,11,0.2); }
+    .badge.green  { background: rgba(34,197,94,0.12);  color: var(--green);  border: 1px solid rgba(34,197,94,0.2); }
+    .badge.blue   { background: rgba(59,130,246,0.12); color: var(--accent2);border: 1px solid rgba(59,130,246,0.2); }
+    .badge.online-dot::before { content: ''; display: inline-block; width: 5px; height: 5px; border-radius: 50%; background: var(--green); }
 
     /* worker pool bars */
     .worker-bars { display: flex; flex-direction: column; gap: 8px; }
@@ -172,14 +211,21 @@ export function getStudioHTML(): string {
       display: flex; align-items: center; gap: 10px; flex-shrink: 0;
       background: var(--bg2);
     }
-    #filter-input {
+    .filter-wrap {
+      display: flex; align-items: center; gap: 6px;
       flex: 1; max-width: 320px;
       background: var(--bg3); border: 1px solid var(--border2);
-      border-radius: 6px; padding: 6px 12px;
-      color: var(--text); font-size: 13px; font-family: 'Inter', sans-serif;
-      outline: none; transition: border-color 0.15s;
+      border-radius: 6px; padding: 0 10px;
+      transition: border-color 0.15s;
     }
-    #filter-input:focus { border-color: var(--accent); }
+    .filter-wrap:focus-within { border-color: var(--accent); }
+    .filter-wrap svg { color: var(--text3); flex-shrink: 0; }
+    #filter-input {
+      flex: 1; border: none; background: transparent;
+      padding: 6px 0;
+      color: var(--text); font-size: 13px; font-family: 'Inter', sans-serif;
+      outline: none;
+    }
     #filter-input::placeholder { color: var(--text3); }
     select.sort-select {
       background: var(--bg3); border: 1px solid var(--border2);
@@ -200,6 +246,7 @@ export function getStudioHTML(): string {
       cursor: pointer; white-space: nowrap;
       user-select: none;
     }
+    th .th-inner { display: flex; align-items: center; gap: 4px; }
     th:hover { color: var(--text); }
     th.sorted { color: var(--accent2); }
     td {
@@ -211,12 +258,14 @@ export function getStudioHTML(): string {
     tr { cursor: pointer; transition: background 0.1s; }
     tr:hover td { background: var(--bg3); }
     tr.selected td { background: rgba(59,130,246,0.08); }
-    .cell-id { font-family: var(--font-mono); font-size: 11px; color: var(--text3); }
-    .cell-bool-true { color: var(--green); font-size: 11px; font-weight: 500; }
-    .cell-bool-false { color: var(--red); font-size: 11px; font-weight: 500; }
-    .cell-num { color: var(--purple); font-family: var(--font-mono); font-size: 12px; }
-    .cell-date { color: var(--teal); font-size: 11px; }
-    .cell-null { color: var(--text3); font-style: italic; font-size: 11px; }
+    .cell-id    { font-family: var(--font-mono); font-size: 11px; color: var(--text3); }
+    .cell-bool  { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 500; }
+    .cell-bool.t { color: var(--green); }
+    .cell-bool.f { color: var(--red); }
+    .cell-num   { color: var(--purple); font-family: var(--font-mono); font-size: 12px; }
+    .cell-date  { color: var(--teal); font-size: 11px; }
+    .cell-null  { color: var(--text3); font-style: italic; font-size: 11px; }
+    .cell-obj   { color: var(--text3); font-size: 11px; font-family: var(--font-mono); }
 
     /* ── PAGINATION ──────────────────────────────────────────────── */
     #pagination {
@@ -263,16 +312,14 @@ export function getStudioHTML(): string {
       font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 4px;
       text-transform: uppercase; letter-spacing: 0.5px; flex-shrink: 0; margin-top: 1px;
     }
-    .event-type.insert { background: rgba(34,197,94,0.15); color: var(--green); }
+    .event-type.insert { background: rgba(34,197,94,0.15);  color: var(--green); }
     .event-type.update { background: rgba(245,158,11,0.15); color: var(--yellow); }
-    .event-type.delete { background: rgba(239,68,68,0.15); color: var(--red); }
-    .event-type.system { background: rgba(167,139,250,0.15); color: var(--purple); }
-    .event-body { flex: 1; min-width: 0; }
+    .event-type.delete { background: rgba(239,68,68,0.15);  color: var(--red); }
+    .event-type.system { background: rgba(167,139,250,0.15);color: var(--purple); }
+    .event-body  { flex: 1; min-width: 0; }
     .event-title { font-size: 13px; font-weight: 500; margin-bottom: 2px; }
-    .event-detail { font-size: 11px; color: var(--text3); font-family: var(--font-mono); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .event-time { font-size: 10px; color: var(--text3); flex-shrink: 0; font-family: var(--font-mono); }
-    #events-empty { text-align: center; padding: 60px 20px; color: var(--text3); }
-    #events-empty .empty-icon { font-size: 40px; margin-bottom: 12px; }
+    .event-detail{ font-size: 11px; color: var(--text3); font-family: var(--font-mono); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .event-time  { font-size: 10px; color: var(--text3); flex-shrink: 0; font-family: var(--font-mono); }
 
     /* ── INSPECTOR MODAL ─────────────────────────────────────────── */
     #inspector-overlay {
@@ -289,15 +336,15 @@ export function getStudioHTML(): string {
     }
     @keyframes slideIn { from { transform: translateX(40px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
     #inspector-header { display: flex; align-items: center; justify-content: space-between; }
-    #inspector-title { font-size: 15px; font-weight: 600; }
+    #inspector-title  { font-size: 15px; font-weight: 600; }
     #inspector-close {
       width: 28px; height: 28px; border-radius: 6px;
       background: var(--bg3); border: 1px solid var(--border);
-      cursor: pointer; font-size: 16px; color: var(--text3);
+      cursor: pointer; color: var(--text3);
       display: flex; align-items: center; justify-content: center;
       transition: all 0.15s;
     }
-    #inspector-close:hover { color: var(--text); border-color: var(--red); background: rgba(239,68,68,0.1); }
+    #inspector-close:hover { color: var(--red); border-color: var(--red); background: rgba(239,68,68,0.1); }
     #inspector-body { flex: 1; }
     #inspector-json {
       background: var(--bg); border: 1px solid var(--border);
@@ -306,13 +353,11 @@ export function getStudioHTML(): string {
       white-space: pre-wrap; word-break: break-all; overflow-x: auto;
       color: var(--text);
     }
-    /* JSON syntax highlighting */
-    .j-key    { color: #93c5fd; }
-    .j-str    { color: #86efac; }
-    .j-num    { color: #c4b5fd; }
-    .j-bool   { color: #f97316; }
-    .j-null   { color: var(--text3); }
-    .j-punc   { color: var(--text3); }
+    .j-key  { color: #93c5fd; }
+    .j-str  { color: #86efac; }
+    .j-num  { color: #c4b5fd; }
+    .j-bool { color: #f97316; }
+    .j-null { color: var(--text3); }
 
     /* ── EMPTY / LOADING ─────────────────────────────────────────── */
     .loading-spinner {
@@ -322,8 +367,8 @@ export function getStudioHTML(): string {
     }
     @keyframes spin { to { transform: rotate(360deg); } }
     .empty-state { text-align: center; padding: 60px 20px; color: var(--text3); }
-    .empty-state .empty-icon { font-size: 40px; margin-bottom: 12px; }
-    .empty-state p { font-size: 14px; margin-bottom: 6px; }
+    .empty-state .empty-icon { display: flex; justify-content: center; margin-bottom: 14px; opacity: 0.4; }
+    .empty-state p     { font-size: 14px; margin-bottom: 6px; color: var(--text2); }
     .empty-state small { font-size: 12px; }
 
     /* ── SCROLLBAR ───────────────────────────────────────────────── */
@@ -340,6 +385,9 @@ export function getStudioHTML(): string {
       display: none; z-index: 200; animation: toastIn 0.2s ease;
     }
     @keyframes toastIn { from { opacity:0; transform: translateY(10px); } to { opacity:1; transform: translateY(0); } }
+
+    /* ── SEARCH ICON ─────────────────────────────────────────────── */
+    .search-icon { color: var(--text3); pointer-events: none; }
   </style>
 </head>
 <body>
@@ -348,17 +396,17 @@ export function getStudioHTML(): string {
   <!-- ── SIDEBAR ──────────────────────────────────────────────────── -->
   <nav id="sidebar">
     <div id="sidebar-header">
-      <div class="logo-icon">🗄</div>
+      <div class="logo-icon">${ico.logoDb}</div>
       <span class="logo-text">gramobase</span>
       <span class="logo-badge">STUDIO</span>
     </div>
     <div id="sidebar-nav">
       <div class="nav-section">Dashboard</div>
       <div class="nav-item active" data-panel="overview" onclick="switchPanel('overview')">
-        <span class="nav-item-icon">⚡</span> Overview
+        ${ico.gauge} Overview
       </div>
       <div class="nav-item" data-panel="realtime" onclick="switchPanel('realtime')">
-        <span class="nav-item-icon">📡</span> Realtime Feed
+        ${ico.radio} Realtime Feed
       </div>
 
       <div class="nav-section" style="margin-top:10px">Collections</div>
@@ -374,16 +422,14 @@ export function getStudioHTML(): string {
 
   <!-- ── MAIN ─────────────────────────────────────────────────────── -->
   <div id="main">
-    <!-- Topbar -->
     <div id="topbar">
       <span id="topbar-title">Overview</span>
       <span id="topbar-sub"></span>
       <div id="topbar-actions">
-        <button class="btn" onclick="refreshCurrent()">↺ Refresh</button>
+        <button class="btn" onclick="refreshCurrent()">${ico.refresh} Refresh</button>
       </div>
     </div>
 
-    <!-- Content -->
     <div id="content">
 
       <!-- Overview Panel -->
@@ -396,13 +442,16 @@ export function getStudioHTML(): string {
       <!-- Collection Panel -->
       <div id="panel-collection" class="panel">
         <div id="collection-toolbar">
-          <input id="filter-input" type="text" placeholder="Filter (e.g. completed:true or hello)" oninput="debounceFilter()" />
+          <div class="filter-wrap">
+            <svg class="search-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input id="filter-input" type="text" placeholder="Filter: field:value or text" oninput="debounceFilter()" />
+          </div>
           <select class="sort-select" id="sort-field" onchange="loadCollection()">
             <option value="">Sort by...</option>
           </select>
           <select class="sort-select" id="sort-dir" onchange="loadCollection()" style="width:90px">
-            <option value="-1">↓ DESC</option>
-            <option value="1">↑ ASC</option>
+            <option value="-1">DESC</option>
+            <option value="1">ASC</option>
           </select>
           <span style="font-size:12px;color:var(--text3);margin-left:4px" id="coll-count"></span>
         </div>
@@ -419,11 +468,11 @@ export function getStudioHTML(): string {
       <div id="panel-realtime" class="panel">
         <div id="events-toolbar">
           <div class="event-indicator"><div class="pulse"></div> Live events</div>
-          <button class="btn" style="margin-left:auto" onclick="clearEvents()">🗑 Clear</button>
+          <button class="btn" style="margin-left:auto" onclick="clearEvents()">${ico.trash} Clear</button>
         </div>
         <div id="events-log">
           <div class="empty-state" id="events-empty">
-            <div class="empty-icon">📡</div>
+            <div class="empty-icon">${ico.activity}</div>
             <p>Waiting for events...</p>
             <small>Insert, update, or delete documents to see events here.</small>
           </div>
@@ -439,7 +488,7 @@ export function getStudioHTML(): string {
   <div id="inspector-panel">
     <div id="inspector-header">
       <span id="inspector-title">Document</span>
-      <div id="inspector-close" onclick="closeInspector()">✕</div>
+      <div id="inspector-close" onclick="closeInspector()">${ico.x}</div>
     </div>
     <div id="inspector-body">
       <pre id="inspector-json"></pre>
@@ -451,6 +500,25 @@ export function getStudioHTML(): string {
 <div id="toast"></div>
 
 <script>
+/* ─── Icon snippets for dynamic HTML ─────────────────────── */
+const SVG = {
+  bot:    \`${ico.bot}\`,
+  layers: \`${ico.layers}\`,
+  zap:    \`${ico.zap}\`,
+  hdd:    \`${ico.hdd}\`,
+  hash:   \`${ico.hash}\`,
+  grid:   \`${ico.grid}\`,
+  table:  \`${ico.table}\`,
+  xCirc:  \`${ico.xCircle}\`,
+  inbox:  \`${ico.inbox}\`,
+  asc:    \`${ico.sortAsc}\`,
+  desc:   \`${ico.sortDesc}\`,
+  chevrL: \`${ico.chevrL}\`,
+  chevrR: \`${ico.chevrR}\`,
+  check:  \`${ico.check}\`,
+  close2: \`${ico.close2}\`,
+};
+
 /* ─── State ───────────────────────────────────────────────── */
 let currentPanel = 'overview';
 let currentCollection = null;
@@ -494,41 +562,42 @@ function renderOverview(data) {
     : 0;
   const cacheUsedMb = ((cache.bytes || 0) / 1024 / 1024).toFixed(1);
   const cacheMaxMb = ((cache.maxBytes || 1) / 1024 / 1024).toFixed(0);
+  const hitColor = hitPct > 70 ? 'green' : hitPct > 40 ? 'yellow' : 'blue';
 
   document.getElementById('overview-inner').innerHTML = \`
     <div class="stats-grid">
       <div class="stat-card">
-        <div class="stat-icon">🤖</div>
+        <div class="stat-icon-wrap blue">\${SVG.bot}</div>
         <div class="stat-label">Bot</div>
         <div class="stat-value blue" style="font-size:18px">@\${escH(data.bot?.username || '—')}</div>
         <div class="stat-sub">\${escH(data.bot?.firstName || '')}</div>
       </div>
       <div class="stat-card">
-        <div class="stat-icon">📦</div>
+        <div class="stat-icon-wrap purple">\${SVG.layers}</div>
         <div class="stat-label">Token Pool</div>
         <div class="stat-value purple">\${tokens.length || 1}</div>
         <div class="stat-sub">\${(tokens.length||1) * 30} req/s capacity</div>
       </div>
       <div class="stat-card">
-        <div class="stat-icon">⚡</div>
+        <div class="stat-icon-wrap \${hitColor}">\${SVG.zap}</div>
         <div class="stat-label">Cache Hit Rate</div>
-        <div class="stat-value \${hitPct > 70 ? 'green' : hitPct > 40 ? 'yellow' : 'blue'}">\${hitPct}%</div>
+        <div class="stat-value \${hitColor}">\${hitPct}%</div>
         <div class="stat-sub">\${cache.hits||0} hits / \${cache.misses||0} misses</div>
       </div>
       <div class="stat-card">
-        <div class="stat-icon">🗄</div>
+        <div class="stat-icon-wrap teal">\${SVG.hdd}</div>
         <div class="stat-label">Cache Usage</div>
-        <div class="stat-value blue">\${cacheUsedMb} MB</div>
+        <div class="stat-value teal">\${cacheUsedMb} MB</div>
         <div class="stat-sub">of \${cacheMaxMb} MB limit</div>
       </div>
       <div class="stat-card">
-        <div class="stat-icon">📑</div>
+        <div class="stat-icon-wrap blue">\${SVG.hash}</div>
         <div class="stat-label">Channel</div>
         <div class="stat-value blue" style="font-size:15px;font-family:var(--font-mono)">\${escH(data.channelId || '—')}</div>
         <div class="stat-sub">Primary channel</div>
       </div>
       <div class="stat-card">
-        <div class="stat-icon">🌀</div>
+        <div class="stat-icon-wrap green">\${SVG.grid}</div>
         <div class="stat-label">Collections</div>
         <div class="stat-value green">\${(data.collections||[]).length}</div>
         <div class="stat-sub">discovered</div>
@@ -537,7 +606,7 @@ function renderOverview(data) {
 
     <div class="section-title">Bot Connection</div>
     <div class="info-card">
-      <div class="info-row"><span class="info-key">Status</span><span class="info-val"><span class="badge green">● Online</span></span></div>
+      <div class="info-row"><span class="info-key">Status</span><span class="info-val"><span class="badge green online-dot"> Online</span></span></div>
       <div class="info-row"><span class="info-key">Username</span><span class="info-val">@\${escH(data.bot?.username||'—')}</span></div>
       <div class="info-row"><span class="info-key">First Name</span><span class="info-val">\${escH(data.bot?.firstName||'—')}</span></div>
       <div class="info-row"><span class="info-key">Channel ID</span><span class="info-val">\${escH(data.channelId||'—')}</span></div>
@@ -564,7 +633,7 @@ function renderOverview(data) {
 function renderOverviewError(msg) {
   document.getElementById('overview-inner').innerHTML = \`
     <div class="empty-state">
-      <div class="empty-icon">❌</div>
+      <div class="empty-icon">\${SVG.xCirc}</div>
       <p>Could not connect to gramobase</p>
       <small>\${escH(msg)}</small>
     </div>
@@ -583,7 +652,7 @@ async function loadCollections() {
     }
     nav.innerHTML = list.map(c => \`
       <div class="nav-item" data-panel="collection" data-col="\${escH(c.name)}" onclick="openCollection('\${escH(c.name)}')">
-        <span class="nav-item-icon">📋</span>
+        \${SVG.table}
         <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">\${escH(c.name)}</span>
         <span class="nav-item-count">\${c.count||'?'}</span>
       </div>
@@ -609,10 +678,7 @@ async function loadCollection() {
   sortField = document.getElementById('sort-field').value;
   sortDir = parseInt(document.getElementById('sort-dir').value, 10);
   const params = new URLSearchParams({
-    page: currentPage,
-    limit: pageSize,
-    filter: filterText,
-    sortField, sortDir,
+    page: currentPage, limit: pageSize, filter: filterText, sortField, sortDir,
   });
   setTableLoading();
   try {
@@ -622,17 +688,15 @@ async function loadCollection() {
     renderTable(data.docs || [], data.columns || []);
     renderPagination();
     updateSortSelect(data.columns || []);
-    document.getElementById('coll-count').textContent = totalDocs + ' documents';
-    // update sidebar count
-    const items = document.querySelectorAll('.nav-item[data-col]');
-    items.forEach(item => {
+    document.getElementById('coll-count').textContent = totalDocs + ' docs';
+    document.querySelectorAll('.nav-item[data-col]').forEach(item => {
       if (item.dataset.col === currentCollection) {
         const cnt = item.querySelector('.nav-item-count');
         if (cnt) cnt.textContent = totalDocs;
       }
     });
   } catch(e) {
-    document.getElementById('table-wrap').innerHTML = \`<div class="empty-state"><div class="empty-icon">❌</div><p>\${escH(e.message)}</p></div>\`;
+    document.getElementById('table-wrap').innerHTML = \`<div class="empty-state"><div class="empty-icon">\${SVG.xCirc}</div><p>\${escH(e.message)}</p></div>\`;
   }
 }
 
@@ -651,16 +715,17 @@ function renderTable(docs, cols) {
   if (docs.length === 0) {
     document.getElementById('table-wrap').innerHTML = \`
       <div class="empty-state">
-        <div class="empty-icon">📭</div>
+        <div class="empty-icon">\${SVG.inbox}</div>
         <p>No documents found</p>
         <small>Try adjusting your filter or add some data.</small>
       </div>\`;
     return;
   }
   const allCols = ['_id', ...cols.filter(c => !c.startsWith('_') && c !== '_id'), '_createdAt', '_updatedAt'];
+  const sortIcon = (c) => sortField === c ? (sortDir === -1 ? SVG.desc : SVG.asc) : '';
   const html = \`<table>
     <thead><tr>
-      \${allCols.map(c => \`<th class="\${sortField===c?'sorted':''}" onclick="sortBy('\${escH(c)}')">\${escH(c)}\${sortField===c?(sortDir===-1?' ↓':' ↑'):''}</th>\`).join('')}
+      \${allCols.map(c => \`<th class="\${sortField===c?'sorted':''}" onclick="sortBy('\${escH(c)}')"><div class="th-inner">\${escH(c)}\${sortIcon(c)}</div></th>\`).join('')}
     </tr></thead>
     <tbody>
       \${docs.map((doc, i) => \`
@@ -670,17 +735,18 @@ function renderTable(docs, cols) {
     </tbody>
   </table>\`;
   document.getElementById('table-wrap').innerHTML = html;
-  // store docs for inspector
   window._currentDocs = docs;
 }
 
 function renderCell(val, col) {
-  if (val === undefined || val === null) return '<span class="cell-null">null</span>';
+  if (val === undefined || val === null) return '<span class="cell-null">—</span>';
   if (col === '_id' || col === '_collection') return \`<span class="cell-id">\${escH(String(val).slice(0,12))}…</span>\`;
   if (col === '_createdAt' || col === '_updatedAt') return \`<span class="cell-date">\${escH(fmtDate(val))}</span>\`;
-  if (typeof val === 'boolean') return val ? '<span class="cell-bool-true">✓ true</span>' : '<span class="cell-bool-false">✗ false</span>';
+  if (typeof val === 'boolean') return val
+    ? \`<span class="cell-bool t">\${SVG.check} true</span>\`
+    : \`<span class="cell-bool f">\${SVG.close2} false</span>\`;
   if (typeof val === 'number') return \`<span class="cell-num">\${escH(String(val))}</span>\`;
-  if (typeof val === 'object') return \`<span style="color:var(--text3);font-size:11px">{…}</span>\`;
+  if (typeof val === 'object') return '<span class="cell-obj">{…}</span>';
   const s = String(val);
   return \`<span title="\${escH(s)}">\${escH(s.length > 40 ? s.slice(0,40)+'…' : s)}</span>\`;
 }
@@ -699,7 +765,7 @@ function inspectDoc(idx) {
   document.getElementById('inspector-title').textContent = 'Document: ' + (doc._id?.slice(0,8)||'') + '…';
   document.getElementById('inspector-json').innerHTML = syntaxHL(JSON.stringify(doc, null, 2));
   document.getElementById('inspector-overlay').classList.add('open');
-  document.querySelectorAll('tr').forEach((r,i) => r.classList.toggle('selected', r.dataset.idx == idx));
+  document.querySelectorAll('tr').forEach(r => r.classList.toggle('selected', r.dataset.idx == idx));
 }
 
 function closeInspector(e) {
@@ -716,13 +782,13 @@ function renderPagination() {
   document.getElementById('pagination-info').textContent = totalDocs > 0 ? \`\${start}–\${end} of \${totalDocs}\` : '0 results';
 
   let btns = '';
-  btns += \`<button class="page-btn" onclick="goPage(\${currentPage-1})" \${currentPage<=1?'disabled':''}>‹</button>\`;
+  btns += \`<button class="page-btn" onclick="goPage(\${currentPage-1})" \${currentPage<=1?'disabled':''}>\${SVG.chevrL}</button>\`;
   const pages = pageRange(currentPage, totalPages);
   pages.forEach(p => {
     if (p === '…') btns += \`<span style="color:var(--text3);padding:0 4px;line-height:28px">…</span>\`;
     else btns += \`<button class="page-btn \${p===currentPage?'active':''}" onclick="goPage(\${p})">\${p}</button>\`;
   });
-  btns += \`<button class="page-btn" onclick="goPage(\${currentPage+1})" \${currentPage>=totalPages?'disabled':''}>›</button>\`;
+  btns += \`<button class="page-btn" onclick="goPage(\${currentPage+1})" \${currentPage>=totalPages?'disabled':''}>\${SVG.chevrR}</button>\`;
   document.getElementById('pagination-controls').innerHTML = btns;
 }
 
@@ -758,10 +824,7 @@ function connectSSE() {
   if (eventSource) eventSource.close();
   eventSource = new EventSource('/api/events');
   eventSource.onmessage = (e) => {
-    try {
-      const ev = JSON.parse(e.data);
-      addEvent(ev);
-    } catch(_) {}
+    try { addEvent(JSON.parse(e.data)); } catch(_) {}
   };
   eventSource.onerror = () => {};
 }
@@ -792,23 +855,17 @@ function addEvent(ev) {
     <div class="event-time">\${fmtTime(new Date())}</div>
   \`;
   log.insertBefore(item, log.firstChild);
-
-  // trim to 200
   while (log.children.length > 200) log.removeChild(log.lastChild);
-
-  // if viewing the related collection, refresh
-  if ((ev.collection === currentCollection) && currentPanel === 'collection') {
-    loadCollection();
-  }
+  if ((ev.collection === currentCollection) && currentPanel === 'collection') loadCollection();
 }
 
 function clearEvents() {
-  const log = document.getElementById('events-log');
-  log.innerHTML = \`<div class="empty-state" id="events-empty">
-    <div class="empty-icon">📡</div>
-    <p>Waiting for events...</p>
-    <small>Insert, update, or delete documents to see events here.</small>
-  </div>\`;
+  document.getElementById('events-log').innerHTML = \`
+    <div class="empty-state" id="events-empty">
+      <div class="empty-icon">\${SVG.xCirc}</div>
+      <p>Waiting for events...</p>
+      <small>Insert, update, or delete documents to see events here.</small>
+    </div>\`;
   eventCount = 0;
 }
 
@@ -828,8 +885,7 @@ function switchPanel(name) {
   if (name === 'overview') {
     document.getElementById('topbar-title').textContent = 'Overview';
     document.getElementById('topbar-sub').textContent = '';
-    loadStatus();
-    loadCollections();
+    loadStatus(); loadCollections();
   }
   if (name === 'realtime') {
     document.getElementById('topbar-title').textContent = 'Realtime Feed';
@@ -866,9 +922,7 @@ function fmtDate(v) {
   try { return new Date(v).toLocaleString(); } catch(_) { return String(v); }
 }
 
-function fmtTime(d) {
-  return d.toTimeString().slice(0,8);
-}
+function fmtTime(d) { return d.toTimeString().slice(0,8); }
 
 function syntaxHL(json) {
   return json
@@ -883,14 +937,6 @@ function syntaxHL(json) {
     .replace(/:\\s*(null)/g, (m,n) => m.replace(n, \`<span class="j-null">\${n}</span>\`));
 }
 
-function toast(msg, ms=2500) {
-  const t = document.getElementById('toast');
-  t.textContent = msg; t.style.display = 'block';
-  clearTimeout(t._timer);
-  t._timer = setTimeout(() => t.style.display = 'none', ms);
-}
-
-/* ─── Boot ────────────────────────────────────────────────── */
 init();
 </script>
 </body>
