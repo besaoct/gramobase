@@ -2,8 +2,6 @@ import { z } from 'zod';
 
 // ─── Core document types ──────────────────────────────────────────────────
 
-// ─── Core document types ──────────────────────────────────────────────────
-
 export interface TgBaseDocument {
   _id: string;
   _collection: string;
