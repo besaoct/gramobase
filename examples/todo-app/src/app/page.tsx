@@ -13,10 +13,21 @@ type Todo = {
 function TodoItem({ todo, mutateTodos, todos }: { todo: Todo, mutateTodos: any, todos: Todo[] }) {
   const toggleMutation = useGramoMutation(`/api/todos/${todo._id}`, 'PATCH', {
     onMutate: () => {
+      if (process.env.NODE_ENV === 'development') {
+        console.log(`[Todo App] Optimistically toggled "${todo.text}" (completed: ${!todo.completed})`);
+      }
       // Optimistic update
       mutateTodos(todos.map(t => t._id === todo._id ? { ...t, completed: !todo.completed } : t));
     },
-    onError: () => {
+    onSuccess: () => {
+      if (process.env.NODE_ENV === 'development') {
+        console.log(`[Todo App] Toggled completion successfully: "${todo.text}"`);
+      }
+    },
+    onError: (err: any) => {
+      if (process.env.NODE_ENV === 'development') {
+        console.error(`[Todo App] Failed to toggle "${todo.text}":`, err.message);
+      }
       // Rollback on failure
       mutateTodos(todos);
     }
@@ -24,10 +35,21 @@ function TodoItem({ todo, mutateTodos, todos }: { todo: Todo, mutateTodos: any, 
 
   const deleteMutation = useGramoMutation(`/api/todos/${todo._id}`, 'DELETE', {
     onMutate: () => {
+      if (process.env.NODE_ENV === 'development') {
+        console.log(`[Todo App] Optimistically deleting "${todo.text}"`);
+      }
       // Optimistic delete
       mutateTodos(todos.filter(t => t._id !== todo._id));
     },
-    onError: () => {
+    onSuccess: () => {
+      if (process.env.NODE_ENV === 'development') {
+        console.log(`[Todo App] Deleted todo successfully: "${todo.text}"`);
+      }
+    },
+    onError: (err: any) => {
+      if (process.env.NODE_ENV === 'development') {
+        console.error(`[Todo App] Failed to delete "${todo.text}":`, err.message);
+      }
       // Rollback on failure
       mutateTodos(todos);
     }
@@ -69,12 +91,29 @@ function TodoItem({ todo, mutateTodos, todos }: { todo: Todo, mutateTodos: any, 
 
 export default function Home() {
   const { data: todos, isLoading, error, mutate } = useGramoQuery<Todo[]>("/api/todos");
+  
+  if (process.env.NODE_ENV === 'development' && !isLoading) {
+    if (error) {
+      console.error('[Todo App] Failed to fetch todos:', error.message);
+    } else if (todos) {
+      console.log(`[Todo App] Fetched ${todos.length} todos successfully`);
+    }
+  }
+
   const [inputText, setInputText] = useState("");
 
   const addMutation = useGramoMutation<Todo, { text: string }>("/api/todos", 'POST', {
     onSuccess: (newTodo) => {
+      if (process.env.NODE_ENV === 'development') {
+        console.log('[Todo App] Added new todo successfully:', newTodo);
+      }
       mutate((prev) => [newTodo, ...(prev || [])]);
       setInputText("");
+    },
+    onError: (err: any) => {
+      if (process.env.NODE_ENV === 'development') {
+        console.error('[Todo App] Failed to add todo:', err.message);
+      }
     }
   });
 

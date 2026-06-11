@@ -156,8 +156,13 @@ export class Registry {
   private async writeRegistryMessage(
     data: { activeLease: Lease | null; indexes?: Record<string, number> }
   ): Promise<void> {
+    let leasePayload = null;
+    if (data.activeLease) {
+      const { heartbeatInterval, ...rest } = data.activeLease;
+      leasePayload = rest;
+    }
     const payload = {
-      activeLease: data.activeLease,
+      activeLease: leasePayload,
       indexes: data.indexes || this.state.indexes || {},
     };
     const text = `${REGISTRY_TAG}\n${JSON.stringify(payload, null, 0)}`;
