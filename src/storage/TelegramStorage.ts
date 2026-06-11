@@ -46,11 +46,10 @@ export class TelegramStorage {
 
   private async readRawMessageText(msgId: number, channel: string): Promise<string | null> {
     try {
-      const msgs = await this.pool.execute((bot) =>
-        (bot as any).forwardMessages(channel, channel, [msgId])
+      const msg = await this.pool.execute((bot) =>
+        bot.forwardMessage(channel, channel, msgId)
       ) as any;
 
-      const msg = Array.isArray(msgs) ? msgs[0] : msgs;
       if (!msg?.text) return null;
 
       let text = msg.text as string;
@@ -169,11 +168,10 @@ export class TelegramStorage {
     const channel = channelId ?? this.defaultChannelId;
 
     try {
-      const msgs = await this.pool.execute((bot) =>
-        (bot as any).forwardMessages(channel, channel, [msgId])
+      const msg = await this.pool.execute((bot) =>
+        bot.forwardMessage(channel, channel, msgId)
       ) as any;
 
-      const msg = Array.isArray(msgs) ? msgs[0] : msgs;
       if (!msg?.text) return null;
 
       let text = msg.text as string;
@@ -241,10 +239,9 @@ export class TelegramStorage {
     const parts: string[] = [];
 
     for (const id of msgIds) {
-      const msgs = await this.pool.execute((bot) =>
-        (bot as any).forwardMessages(channel, channel, [id])
+      const msg = await this.pool.execute((bot) =>
+        bot.forwardMessage(channel, channel, id)
       ) as any;
-      const msg = Array.isArray(msgs) ? msgs[0] : msgs;
       if (msg?.text) parts.push(msg.text as string);
     }
 
