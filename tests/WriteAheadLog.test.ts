@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { WriteAheadLog } from './WriteAheadLog.js';
+import { WriteAheadLog } from '../src/wal/WriteAheadLog.js';
 
 describe('WriteAheadLog', () => {
   let mockPool: any;

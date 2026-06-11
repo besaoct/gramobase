@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { BotWorkerPool } from './BotWorkerPool.js';
+import { BotWorkerPool } from '../src/workers/BotWorkerPool.js';
 
 describe('BotWorkerPool', () => {
   it('should initialize with bot tokens and create workers', () => {

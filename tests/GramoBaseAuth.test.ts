@@ -1,6 +1,5 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { GramoBaseAuth } from './GramoBaseAuth.js';
-import * as bcrypt from 'bcryptjs';
+import { GramoBaseAuth } from '../src/auth/GramoBaseAuth.js';
 
 describe('GramoBaseAuth', () => {
   let mockUsersList: any[] = [];

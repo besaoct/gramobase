@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { MigrationRunner } from './MigrationRunner.js';
-import { Migration } from '../types/index.js';
+import { MigrationRunner } from '../src/migrations/MigrationRunner.js';
+import { Migration } from '../src/types/index.js';
 
 describe('MigrationRunner', () => {
   let mockPool: any;

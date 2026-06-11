@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { z } from 'zod';
-import { Collection } from './Collection.js';
-import { HotCache } from '../cache/HotCache.js';
+import { Collection } from '../src/orm/Collection.js';
+import { HotCache } from '../src/cache/HotCache.js';
 
 describe('Collection ORM', () => {
   const ProductSchema = z.object({

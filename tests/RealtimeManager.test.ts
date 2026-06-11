@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { RealtimeManager } from './RealtimeManager.js';
+import { RealtimeManager } from '../src/realtime/RealtimeManager.js';
 
 describe('RealtimeManager', () => {
   let mockPool: any;

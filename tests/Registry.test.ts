@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import { Registry } from './Registry.js';
+import { Registry } from '../src/registry/Registry.js';
 
 describe('Registry Distributed Leases', () => {
   let mockPool: any;

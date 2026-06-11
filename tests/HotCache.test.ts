@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { HotCache } from './HotCache.js';
+import { HotCache } from '../src/cache/HotCache.js';
 
 describe('HotCache', () => {
   let cache: HotCache;

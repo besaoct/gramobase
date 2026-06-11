@@ -18,6 +18,7 @@ const db = await createClient({
   ],
   channelId: process.env['GRAMOBASE_CHANNEL_ID']!,
   encryptionKey: process.env['GRAMOBASE_ENCRYPTION_KEY'], // AES-256 at rest
+  global: true,                                 // Auto-caches client globally to prevent lease collisions (e.g. in Next.js HMR)
   cacheMaxBytes: 128 * 1024 * 1024,             // 128MB hot cache
   cacheTtlMs: 120_000,
   debug: true,
