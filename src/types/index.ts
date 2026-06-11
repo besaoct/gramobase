@@ -15,7 +15,13 @@ export type WithId<T> = T & GramoBaseDocument;
 
 // ─── Collection config ────────────────────────────────────────────────────
 
-export interface CollectionConfig<T extends z.ZodType> {
+export interface SchemaLike<Output = any> {
+  parse(data: unknown): Output;
+}
+
+export type InferSchema<T extends SchemaLike> = ReturnType<T['parse']>;
+
+export interface CollectionConfig<T extends SchemaLike> {
   schema: T;
   /** Channel override — uses the default if omitted */
   channelId?: string | undefined;

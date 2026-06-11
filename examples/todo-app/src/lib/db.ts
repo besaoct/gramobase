@@ -18,7 +18,7 @@ export async function getDb() {
     global: true, // Auto-caches client globally to prevent lease collisions!
   });
 
-  return client.;
+  return client.connect();
 }
 
 export async function getTodosCollection() {

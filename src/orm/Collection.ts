@@ -7,12 +7,14 @@ import {
   GramoBaseDocument,
   CollectionConfig,
   WithId,
+  SchemaLike,
+  InferSchema,
 } from '../types/index.js';
 import { HotCache } from '../cache/HotCache.js';
 import { TelegramStorage } from '../storage/TelegramStorage.js';
 import { WriteAheadLog } from '../wal/WriteAheadLog.js';
 
-type DocOf<T extends z.ZodType> = WithId<z.infer<T>>;
+type DocOf<T extends SchemaLike> = WithId<InferSchema<T>>;
 
 /**
  * Collection<T> is the main ORM interface.
@@ -24,7 +26,7 @@ type DocOf<T extends z.ZodType> = WithId<z.infer<T>>;
  *   - Index management (id → msgId map, stored as a pinned message)
  *   - Filter/sort/skip/limit in memory after cache warm-up
  */
-export class Collection<T extends z.ZodType> {
+export class Collection<T extends SchemaLike> {
   private name: string;
   private config: CollectionConfig<T>;
   private cache: HotCache;
@@ -60,8 +62,8 @@ export class Collection<T extends z.ZodType> {
 
   // ─── Insert ────────────────────────────────────────────────────────────
 
-  async insertOne(data: z.infer<T>): Promise<DocOf<T>> {
-    const validated = this.config.schema.parse(data) as z.infer<T>;
+  async insertOne(data: InferSchema<T>): Promise<DocOf<T>> {
+    const validated = this.config.schema.parse(data) as InferSchema<T>;
     const doc: GramoBaseDocument = {
       ...validated,
       _id: randomUUID(),
@@ -88,7 +90,7 @@ export class Collection<T extends z.ZodType> {
     return doc as DocOf<T>;
   }
 
-  async insertMany(items: z.infer<T>[]): Promise<DocOf<T>[]> {
+  async insertMany(items: InferSchema<T>[]): Promise<DocOf<T>[]> {
     return Promise.all(items.map((item) => this.insertOne(item)));
   }
 
@@ -110,12 +112,12 @@ export class Collection<T extends z.ZodType> {
     return doc as DocOf<T>;
   }
 
-  async findOne(filter: Filter<z.infer<T>> = {}): Promise<DocOf<T> | null> {
+  async findOne(filter: Filter<InferSchema<T>> = {}): Promise<DocOf<T> | null> {
     const results = await this.find({ filter, limit: 1 });
     return results[0] ?? null;
   }
 
-  async find(options: FindOptions<z.infer<T>> = {}): Promise<DocOf<T>[]> {
+  async find(options: FindOptions<InferSchema<T>> = {}): Promise<DocOf<T>[]> {
     const { filter = {}, sort, limit, skip = 0, projection, useCache = true } = options;
 
     // Check query cache
@@ -176,7 +178,7 @@ export class Collection<T extends z.ZodType> {
     return results;
   }
 
-  async count(filter: Filter<z.infer<T>> = {}): Promise<number> {
+  async count(filter: Filter<InferSchema<T>> = {}): Promise<number> {
     const results = await this.find({ filter, useCache: true });
     return results.length;
   }
@@ -184,8 +186,8 @@ export class Collection<T extends z.ZodType> {
   // ─── Update ────────────────────────────────────────────────────────────
 
   async updateOne(
-    filter: Filter<z.infer<T>>,
-    update: UpdateOperators<z.infer<T>>
+    filter: Filter<InferSchema<T>>,
+    update: UpdateOperators<InferSchema<T>>
   ): Promise<DocOf<T> | null> {
     const doc = await this.findOne(filter);
     if (!doc) return null;
@@ -193,8 +195,8 @@ export class Collection<T extends z.ZodType> {
   }
 
   async updateMany(
-    filter: Filter<z.infer<T>>,
-    update: UpdateOperators<z.infer<T>>
+    filter: Filter<InferSchema<T>>,
+    update: UpdateOperators<InferSchema<T>>
   ): Promise<DocOf<T>[]> {
     const docs = await this.find({ filter });
     return Promise.all(docs.map((doc) => this.applyUpdate(doc, update)));
@@ -202,7 +204,7 @@ export class Collection<T extends z.ZodType> {
 
   async findByIdAndUpdate(
     id: string,
-    update: UpdateOperators<z.infer<T>>
+    update: UpdateOperators<InferSchema<T>>
   ): Promise<DocOf<T> | null> {
     const doc = await this.findById(id);
     if (!doc) return null;
@@ -259,13 +261,13 @@ export class Collection<T extends z.ZodType> {
 
   // ─── Delete ────────────────────────────────────────────────────────────
 
-  async deleteOne(filter: Filter<z.infer<T>>): Promise<boolean> {
+  async deleteOne(filter: Filter<InferSchema<T>>): Promise<boolean> {
     const doc = await this.findOne(filter);
     if (!doc) return false;
     return this.deleteById(doc._id);
   }
 
-  async deleteMany(filter: Filter<z.infer<T>>): Promise<number> {
+  async deleteMany(filter: Filter<InferSchema<T>>): Promise<number> {
     const docs = await this.find({ filter });
     await Promise.all(docs.map((doc) => this.deleteById(doc._id)));
     return docs.length;

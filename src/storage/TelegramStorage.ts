@@ -186,6 +186,7 @@ export class TelegramStorage {
 
       const parsed = JSON.parse(text);
       delete parsed[DOC_TAG];
+      parsed._msgId = msgId;
       return parsed as GramoBaseDocument;
     } catch {
       return null;

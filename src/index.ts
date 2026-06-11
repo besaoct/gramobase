@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { GramoBaseConfig, CollectionConfig, AuthConfig, UploadOptions, FileRecord, Migration } from './types/index.js';
+import { GramoBaseConfig, CollectionConfig, AuthConfig, UploadOptions, FileRecord, Migration, SchemaLike } from './types/index.js';
 import { BotWorkerPool } from './workers/BotWorkerPool.js';
 import { HotCache } from './cache/HotCache.js';
 import { TelegramStorage } from './storage/TelegramStorage.js';
@@ -19,7 +19,7 @@ export class GramoBase {
   readonly registry: Registry;
   readonly realtime: RealtimeManager;
   private migrations: MigrationRunner;
-  private collections: Map<string, Collection<z.ZodType>> = new Map();
+  private collections: Map<string, Collection<any>> = new Map();
   private initialized = false;
   private config: GramoBaseConfig;
 
@@ -98,7 +98,7 @@ export class GramoBase {
 
   // ─── Collection factory ───────────────────────────────────────────────
 
-  collection<T extends z.ZodType>(
+  collection<T extends SchemaLike>(
     name: string,
     config: CollectionConfig<T>
   ): Collection<T> {
@@ -113,7 +113,7 @@ export class GramoBase {
       this.wal,
       this.config.channelId
     );
-    this.collections.set(name, col as Collection<z.ZodType>);
+    this.collections.set(name, col as Collection<any>);
     return col;
   }
 
