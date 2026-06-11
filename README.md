@@ -9,15 +9,42 @@
 
 **Telegram as a free, infinite, production-grade backend database.**
 
-Every Telegram channel is a collection. Every message is a document. Zero infrastructure needed — all you need is a free Telegram account.
+Every Telegram channel is a collection. Every message is a document. Zero infrastructure needed — all you need a free Telegram account.
+
+---
+
+## Quick Start
+
+### 1. Installation
+
+```bash
+npm install gramobase
+```
+
+### 2. Setup
+
+Initialize your project with the auto-detect wizard:
+
+```bash
+npx gramobase init
+```
+
+This interactive wizard walks you through setting up your backend. It features **Auto-Detect** technology and **Anti-Flood** scaling: it will ask you how many Bot Tokens you want to configure (for 30 req/s scaling per bot). Provide your tokens, and leave the Channel ID blank! By sending a message in your channel, `gramobase` will automatically fetch your hidden Telegram Channel ID for you and generate your `.env` and `gramobase.config.ts`.
+
+**Prerequisites:**
+1. Create a bot via [@BotFather](https://t.me/BotFather) on Telegram — takes 30 seconds
+2. Create a private Telegram channel
+3. Add your bot as an **Administrator** with full permissions to the channel
+
+### 3. Usage
 
 ```ts
 import { createClient } from 'gramobase';
 import { z } from 'zod';
 
 const db = await createClient({
-  botToken: process.env.BOT_TOKEN!,
-  channelId: process.env.CHANNEL_ID!,
+  botToken: process.env.GRAMOBASE_BOT_TOKEN_1!,
+  channelId: process.env.GRAMOBASE_CHANNEL_ID!,
 }).connect();
 
 const users = db.collection('users', {
@@ -45,12 +72,6 @@ const user = await users.findOne({ name: { $eq: 'Aarav' } });
 
 ---
 
-## Installation
-
-```bash
-npm install gramobase
-```
-
 ### Running Tests
 
 To run the suite of 40 unit tests checking the ORM, caching, queue/worker pooling, and authentication:
@@ -58,20 +79,6 @@ To run the suite of 40 unit tests checking the ORM, caching, queue/worker poolin
 ```bash
 npm run test
 ```
-
-### Setup
-
-```bash
-npx gramobase init
-```
-
-This interactive wizard walks you through setting up your backend. 
-It features **Auto-Detect** technology and **Anti-Flood** scaling: it will ask you how many Bot Tokens you want to configure (for 30 req/s scaling per bot). Provide your tokens, and leave the Channel ID blank! By sending a message in your channel, `gramobase` will automatically fetch your hidden Telegram Channel ID for you and generate your `.env` and `gramobase.config.ts`.
-
-**Prerequisites:**
-1. Create a bot via [@BotFather](https://t.me/BotFather) on Telegram — takes 30 seconds
-2. Create a private Telegram channel
-3. Add your bot as an **Administrator** with full permissions to the channel
 
 ---
 
