@@ -15,7 +15,7 @@ describe('Registry Distributed Leases', () => {
       execute: vi.fn(async (fn: any) => {
         const fakeBot = {
           getChat: async () => chatState,
-          sendMessage: async (channelId: string, text: string) => {
+          sendMessage: async (_channelId: string, text: string) => {
             const msg = { message_id: 999, text };
             chatState.pinned_message = msg;
             return msg;

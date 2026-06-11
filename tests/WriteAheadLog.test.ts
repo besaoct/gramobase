@@ -11,7 +11,7 @@ describe('WriteAheadLog', () => {
     mockPool = {
       execute: vi.fn(async (fn: any) => {
         const fakeBot = {
-          sendMessage: async (chatId: string, text: string) => {
+          sendMessage: async (_chatId: string, text: string) => {
             sentMessages.push(text);
             return { message_id: 123 };
           },

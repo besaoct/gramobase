@@ -17,7 +17,7 @@ describe('MigrationRunner', () => {
       execute: vi.fn(async (fn: any) => {
         const fakeBot = {
           getChat: async () => chatState,
-          sendMessage: async (chatId: string, text: string) => {
+          sendMessage: async (_chatId: string, text: string) => {
             sentMessages.push(text);
             const msg = { message_id: 123, text };
             // Simulate adding pinned migration message
