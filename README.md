@@ -9,7 +9,7 @@
 
 **Telegram as a free, infinite, production-grade backend database.**
 
-Every Telegram channel is a collection. Every message is a document. Zero infrastructure needed — all you need a free Telegram account.
+Every Telegram channel is a collection. Every message is a document. Zero infrastructure needed. All you need a free Telegram account.
 
 ---
 
