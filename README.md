@@ -55,6 +55,27 @@ await users.insertOne({ name: 'Aarav', email: 'aarav@example.com' });
 const user = await users.findOne({ name: { $eq: 'Aarav' } });
 ```
 
+> [!IMPORTANT]
+> **Next.js & Hot-Reloading Environments:**
+> In development environments that support hot-reloading (like Next.js), the module cache is frequently cleared, which can instantiate multiple database clients and trigger write lease lock collisions. To prevent this, always cache your client on `globalThis` in development:
+> 
+> ```ts
+> import { createClient } from 'gramobase';
+> 
+> const globalForDb = globalThis as unknown as { dbClient: any };
+> 
+> export async function getDb() {
+>   if (!globalForDb.dbClient) {
+>     const client = createClient({
+>       botToken: process.env.GRAMOBASE_BOT_TOKEN_1!,
+>       channelId: process.env.GRAMOBASE_CHANNEL_ID!,
+>     });
+>     globalForDb.dbClient = await client.connect();
+>   }
+>   return globalForDb.dbClient;
+> }
+> ```
+
 ---
 
 ## Why gramobase?
