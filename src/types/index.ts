@@ -182,4 +182,6 @@ export interface GramoBaseConfig {
   webhookUrl?: string | undefined;
   /** Enable verbose debug logging */
   debug?: boolean | undefined;
+  /** Auto-cache client globally on globalThis in dev mode to prevent lease collisions in serverless/hot-reloading environments */
+  global?: boolean | undefined;
 }

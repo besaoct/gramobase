@@ -216,9 +216,24 @@ export class GramoBase {
   }
 }
 
-// ─── Convenience factory ───────────────────────────────────────────────────
+const globalForGramo = globalThis as unknown as { __gramobase_clients__?: Map<string, GramoBase> };
 
 export function createClient(config: GramoBaseConfig): GramoBase {
+  if (config.global) {
+    if (!globalForGramo.__gramobase_clients__) {
+      globalForGramo.__gramobase_clients__ = new Map();
+    }
+    const cacheKey = Array.isArray(config.botToken)
+      ? `${config.channelId}:${config.botToken.join(',')}`
+      : `${config.channelId}:${config.botToken}`;
+    
+    if (globalForGramo.__gramobase_clients__.has(cacheKey)) {
+      return globalForGramo.__gramobase_clients__.get(cacheKey)!;
+    }
+    const client = new GramoBase(config);
+    globalForGramo.__gramobase_clients__.set(cacheKey, client);
+    return client;
+  }
   return new GramoBase(config);
 }
 

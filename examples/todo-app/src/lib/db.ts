@@ -14,7 +14,7 @@ export async function getDb() {
     if (!process.env.GRAMOBASE_BOT_TOKEN_1 || !process.env.GRAMOBASE_CHANNEL_ID) {
       throw new Error('Missing GRAMOBASE_BOT_TOKEN_1 or GRAMOBASE_CHANNEL_ID in environment variables');
     }
-    
+
     const client = createClient({
       botToken: process.env.GRAMOBASE_BOT_TOKEN_1,
       channelId: process.env.GRAMOBASE_CHANNEL_ID,

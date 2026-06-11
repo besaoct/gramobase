@@ -57,7 +57,24 @@ const user = await users.findOne({ name: { $eq: 'Aarav' } });
 
 > [!IMPORTANT]
 > **Next.js & Hot-Reloading Environments:**
-> In development environments that support hot-reloading (like Next.js), the module cache is frequently cleared, which can instantiate multiple database clients and trigger write lease lock collisions. To prevent this, always cache your client on `globalThis` in development:
+> In development environments that support hot-reloading (like Next.js), the module cache is frequently cleared, which can instantiate multiple database clients and trigger write lease lock collisions. To prevent this, choose one of the following methods to cache your client:
+> 
+> **Option A: Built-in `global` config option (Recommended)**
+> Pass `global: true` in your client config to automatically handle global caching inside the package:
+> 
+> ```ts
+> import { createClient } from 'gramobase';
+> 
+> const client = createClient({
+>   botToken: process.env.GRAMOBASE_BOT_TOKEN_1!,
+>   channelId: process.env.GRAMOBASE_CHANNEL_ID!,
+>   global: true, // Automatically caches the client instance globally
+> });
+> const db = await client.connect();
+> ```
+> 
+> **Option B: Manual `globalThis` caching**
+> Alternatively, you can manage caching manually on the global scope:
 > 
 > ```ts
 > import { createClient } from 'gramobase';
@@ -371,6 +388,7 @@ const db = createClient({
   concurrency?: number,         // max concurrent requests per token, default 25
   webhookUrl?: string,          // enables webhook mode for realtime
   debug?: boolean,
+  global?: boolean,             // auto-cache client globally (default: false)
 });
 ```
 
